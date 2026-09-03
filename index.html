@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cece &amp; Arar</title>
+<style>
+  :root{
+    --blush:#ffeef5;
+    --blush-deep:#ffd6e8;
+    --rose:#ff9dc4;
+    --rose-deep:#e07ba8;
+    --plum:#7c5cad;
+    --plum-deep:#5a3f82;
+    --gold:#b8a6e8;
+    --gold-light:#dccdf5;
+    --cream:#fffbfd;
+    --ink:#5a4a68;
+    --shadow: rgba(124,92,173,0.22);
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-script: 'Brush Script MT','Segoe Script','Lucida Handwriting', cursive;
+    --font-body: 'Segoe UI', Tahoma, Geneva, Arial, sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; height:100%;
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--blush);
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--gold-light); color:var(--plum-deep); }
+
+  button{ font-family:inherit; cursor:pointer; }
+
+  h1,h2,h3{ font-family:var(--font-display); margin:0 0 .4em 0; color:var(--plum); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  /* ============ FLOATING HEART BACKGROUND ============ */
+  #floaty{
+    position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;
+  }
+  .floaty-heart{
+    position:absolute; bottom:-10%; color:var(--rose); opacity:.35;
+    animation-name:floatUp; animation-timing-function:ease-in; animation-iteration-count:infinite;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,.08));
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.4; }
+    90%{ opacity:.35; }
+    100%{ transform:translateY(-115vh) translateX(20px) rotate(25deg); opacity:0; }
+  }
+
+  /* ============ LOCK SCREEN ============ */
+  #lock-screen{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 20%, var(--blush-deep), var(--blush) 60%);
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+  #lock-screen.hidden{
+    opacity:0; visibility:hidden; pointer-events:none;
+  }
+  .lock-card{
+    position:relative; z-index:2;
+    background:var(--cream);
+    border-radius:22px;
+    padding:48px 40px 40px;
+    width:min(90vw, 380px);
+    text-align:center;
+    box-shadow:0 25px 60px var(--shadow), 0 0 0 1px rgba(201,162,75,.25);
+    animation:cardIn 1s ease;
+  }
+  @keyframes cardIn{
+    from{ transform:translateY(30px) scale(.95); opacity:0; }
+    to{ transform:translateY(0) scale(1); opacity:1; }
+  }
+  .seal{
+    width:76px; height:76px; margin:0 auto 18px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 55%, var(--rose-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream); font-size:30px; font-family:var(--font-display);
+    box-shadow:0 8px 18px rgba(156,63,92,.35), inset 0 -3px 6px rgba(0,0,0,.2);
+    transition: transform .7s cubic-bezier(.7,-0.4,.3,1.4), opacity .5s ease;
+  }
+  .seal.crack{ transform:scale(1.5) rotate(25deg); opacity:0; }
+  .lock-card h1{
+    font-size:1.5rem; letter-spacing:.5px;
+  }
+  .lock-card p.sub{
+    color:var(--rose-deep); margin:0 0 24px; font-size:.92rem;
+  }
+  #password-form{ display:flex; flex-direction:column; gap:14px; }
+  #password-input{
+    padding:13px 16px; border-radius:12px; border:1.5px solid var(--blush-deep);
+    background:#fff; font-size:1rem; text-align:center; letter-spacing:1px;
+    outline:none; transition:border-color .3s, box-shadow .3s;
+  }
+  #password-input:focus{ border-color:var(--rose); box-shadow:0 0 0 4px rgba(193,96,122,.15); }
+  #unlock-btn{
+    padding:13px 16px; border:none; border-radius:12px;
+    background:linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color:#fff; font-weight:600; font-size:1rem; letter-spacing:.5px;
+    box-shadow:0 8px 20px rgba(156,63,92,.35);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  #unlock-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(156,63,92,.45); }
+  #unlock-btn:active{ transform:translateY(0); }
+  .lock-error{
+    color:#a13a4a; font-size:.85rem; min-height:1.2em; margin-top:4px;
+  }
+  .shake{ animation:shake .5s; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-8px); }
+    40%{ transform:translateX(8px); }
+    60%{ transform:translateX(-6px); }
+    80%{ transform:translateX(6px); }
+  }
+
+  /* ============ PROFILE PICKER ============ */
+  #profile-select{ display:flex; gap:14px; justify-content:center; margin-bottom:10px; }
+  .profile-btn{
+    flex:1; background:var(--cream); border:1.5px solid var(--blush-deep);
+    border-radius:16px; padding:18px 10px; font-size:.95rem; font-weight:600;
+    color:var(--plum); line-height:1.9; transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .profile-btn:hover{ transform:translateY(-3px); border-color:var(--rose); box-shadow:0 10px 20px var(--shadow); }
+  #back-to-profiles{
+    background:transparent; border:none; color:var(--rose-deep); font-size:.8rem;
+    padding:2px; text-decoration:underline;
+  }
+
+  /* ============ WHOAMI / NOTIF BELL ============ */
+  #whoami{ display:flex; align-items:center; gap:12px; }
+  #whoami-label{ font-size:.85rem; color:var(--rose-deep); font-weight:600; }
+  #notif-bell{
+    position:relative; background:transparent; border:none; font-size:1.25rem; padding:2px 4px;
+  }
+  .notif-badge{
+    position:absolute; top:-2px; right:-4px; background:var(--rose-deep); color:#fff;
+    font-size:.62rem; font-weight:700; min-width:16px; height:16px; border-radius:999px;
+    display:flex; align-items:center; justify-content:center; padding:0 4px;
+  }
+  #switch-profile-btn{
+    background:transparent; border:1px solid var(--blush-deep); border-radius:999px;
+    padding:6px 14px; font-size:.78rem; color:var(--plum); transition:background .2s ease;
+  }
+  #switch-profile-btn:hover{ background:var(--blush-deep); }
+
+  /* ============ NOTIFICATIONS TAB ============ */
+  #notif-list{ display:flex; flex-direction:column; gap:12px; max-width:640px; margin:0 auto; }
+  .notif-item{
+    background:var(--cream); border-radius:14px; padding:14px 18px;
+    box-shadow:0 8px 20px var(--shadow); border-left:4px solid var(--blush-deep);
+    display:flex; flex-direction:column; gap:4px; cursor:pointer; transition:border-color .2s ease;
+  }
+  .notif-item.unread{ border-left-color:var(--rose); }
+  .notif-item .notif-meta{ font-size:.75rem; color:var(--rose-deep); }
+
+  /* ============ DASHBOARD SHELL ============ */
+  #dashboard{
+    position:relative; z-index:2;
+    min-height:100vh;
+    opacity:0; transform:translateY(12px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  #dashboard.show{ opacity:1; transform:translateY(0); }
+
+  header.topnav{
+    position:sticky; top:0; z-index:20;
+    background:rgba(255,250,245,.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--blush-deep);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px; flex-wrap:wrap; gap:10px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .mini-seal{
+    width:34px; height:34px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--rose-deep) 100%);
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px;
+  }
+  .brand span{ font-family:var(--font-script); font-size:1.5rem; color:var(--plum); }
+
+  nav.tabs{ display:flex; gap:6px; flex-wrap:wrap; }
+  nav.tabs button{
+    border:none; background:transparent; padding:9px 16px; border-radius:999px;
+    font-size:.92rem; color:var(--plum); font-weight:600; position:relative;
+    transition:background .25s ease, color .25s ease;
+  }
+  nav.tabs button:hover{ background:var(--blush-deep); }
+  nav.tabs button.active{ background:var(--rose); color:#fff; }
+
+  main{ max-width:1180px; margin:0 auto; padding:36px 24px 80px; }
+
+  .page-section{ display:none; animation:fadeSection .6s ease; }
+  .page-section.active{ display:block; }
+  @keyframes fadeSection{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-intro{ text-align:center; max-width:640px; margin:0 auto 36px; }
+  .section-intro h2{ font-size:2rem; }
+  .section-intro p{ color:var(--rose-deep); }
+
+  /* ============ SECTION 1: ENVELOPES ============ */
+  .envelope-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:26px;
+  }
+  .envelope{ perspective:1600px; height:280px; }
+  .envelope-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition:transform .9s cubic-bezier(.65,.05,.36,1);
+  }
+  .envelope.flipped .envelope-inner{ transform:rotateY(180deg); }
+
+  .envelope-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 14px 30px var(--shadow);
+  }
+  .envelope-front{
+    background:linear-gradient(160deg, var(--rose) 0%, var(--rose-deep) 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:#fff; text-align:center; padding:20px; cursor:pointer;
+    transition:transform .3s ease;
+  }
+  .envelope:hover .envelope-front{ transform:translateY(-4px); }
+  .envelope-front::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:0;
+    border-left:115px solid transparent; border-right:115px solid transparent;
+    border-top:95px solid rgba(255,255,255,.14);
+  }
+  .envelope-front h3{ color:#fff; font-size:1.15rem; margin-top:14px; position:relative; z-index:2; padding:0 10px; }
+  .envelope-front .env-seal{
+    width:44px; height:44px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--plum-deep) 100%);
+    display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff;
+    position:relative; z-index:2; box-shadow:0 4px 10px rgba(0,0,0,.25);
+  }
+  .envelope-front .hint{ position:relative; z-index:2; font-size:.75rem; opacity:.85; margin-top:10px; }
+
+  .envelope-back{
+    background:var(--cream); transform:rotateY(180deg);
+    padding:16px; display:flex; flex-direction:column; gap:10px; overflow-y:auto;
+    border:1px solid var(--blush-deep);
+  }
+  .envelope-back h4{ margin:0; font-family:var(--font-display); color:var(--rose-deep); font-size:1rem; text-align:center; }
+  .letter{
+    background:#fff; border-radius:10px; padding:12px 14px; font-size:.85rem;
+    line-height:1.5; box-shadow:inset 0 0 0 1px var(--blush-deep); color:var(--ink);
+  }
+  .close-envelope{
+    align-self:center; margin-top:auto; border:none; background:var(--blush-deep); color:var(--plum);
+    padding:6px 14px; border-radius:999px; font-size:.78rem; font-weight:600;
+  }
+
+  /* ============ SECTION 2: GALLERY ============ */
+  .gallery-grid{
+    column-count:1; column-width:230px; column-gap:30px; padding-top:10px;
+  }
+  @media (min-width:480px){ .gallery-grid{ column-count:2; } }
+  @media (min-width:760px){ .gallery-grid{ column-count:3; } }
+  @media (min-width:1040px){ .gallery-grid{ column-count:4; } }
+  .frame{
+    display:flex; flex-direction:column; align-items:center;
+    width:100%; break-inside:avoid; -webkit-column-break-inside:avoid;
+    margin:0 0 30px;
+    cursor:pointer; transition:transform .4s ease, box-shadow .4s ease;
+  }
+  .frame:hover{ transform:scale(1.06) rotate(0deg) !important; z-index:5; }
+
+  .frame.polaroid{
+    background:#fff; padding:12px 12px 34px; box-shadow:0 12px 26px var(--shadow);
+  }
+  .frame.polaroid img{ width:100%; display:block; }
+  .frame.polaroid figcaption{ font-family:var(--font-script); font-size:1.1rem; text-align:center; margin-top:8px; color:var(--plum); }
+
+  .frame.gilded{
+    padding:14px; border-radius:6px;
+    background:linear-gradient(135deg, var(--gold-light), var(--gold) 40%, var(--plum-deep) 100%);
+    box-shadow:0 14px 30px var(--shadow);
+  }
+  .frame.gilded .inner{ background:#fff; padding:6px; border:1px solid rgba(0,0,0,.15); }
+  .frame.gilded img{ width:100%; display:block; }
+  .frame.gilded figcaption{ text-align:center; color:var(--cream); font-family:var(--font-display); font-style:italic; margin-top:8px; }
+
+  /* simple photobooth strip: photos stacked at their own natural size, no forced empty space */
+  .frame.strip{
+    background:var(--plum); padding:10px 10px 20px; box-shadow:0 12px 26px var(--shadow); border-radius:6px;
+  }
+  .frame.strip .strip-photos{ display:flex; flex-direction:column; }
+  .frame.strip .strip-photos img{ width:100%; display:block; margin-bottom:8px; border:3px solid #fff; }
+  .frame.strip figcaption{ text-align:center; color:var(--gold-light); font-size:.75rem; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+
+  #gallery-modal{
+    position:fixed; inset:0; background:rgba(46,26,44,.85); z-index:60;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    opacity:0; pointer-events:none; transition:opacity .4s ease;
+  }
+  #gallery-modal.open{ opacity:1; pointer-events:auto; }
+  .modal-card{
+    background:var(--cream); border-radius:16px; max-width:900px; width:100%;
+    display:grid; grid-template-columns:1.3fr 1fr; overflow:hidden; max-height:86vh;
+    box-shadow:0 30px 70px rgba(0,0,0,.4);
+    transform:scale(.92); transition:transform .4s ease;
+  }
+  #gallery-modal.open .modal-card{ transform:scale(1); }
+  .modal-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .modal-text{ padding:26px; overflow-y:auto; }
+  .modal-text h3{ color:var(--rose-deep); }
+  .modal-text p{ line-height:1.6; font-size:.95rem; }
+  .modal-close{
+    position:absolute; top:18px; right:24px; background:rgba(255,255,255,.15); border:none;
+    color:#fff; font-size:1.4rem; width:38px; height:38px; border-radius:50%;
+  }
+  @media (max-width:640px){ .modal-card{ grid-template-columns:1fr; } }
+
+  /* ============ SECTION 3: PUZZLES ============ */
+  .puzzle-menu{ display:flex; gap:12px; justify-content:center; margin-bottom:30px; flex-wrap:wrap; }
+  .puzzle-menu button{
+    border:2px solid var(--rose); background:#fff; color:var(--rose-deep); font-weight:600;
+    padding:10px 22px; border-radius:999px; transition:all .3s ease;
+  }
+  .puzzle-menu button.active, .puzzle-menu button:hover{ background:var(--rose); color:#fff; }
+
+  .puzzle-panel{ display:none; }
+  .puzzle-panel.active{ display:block; animation:fadeSection .5s ease; }
+
+  #wordsearch-wrap{ display:flex; gap:36px; flex-wrap:wrap; justify-content:center; }
+  #ws-grid{
+    display:grid; gap:3px; user-select:none; touch-action:none;
+    background:var(--plum); padding:8px; border-radius:12px; box-shadow:0 14px 30px var(--shadow);
+  }
+  .ws-cell{
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+    background:var(--cream); border-radius:5px; font-weight:700; color:var(--plum);
+    font-size:.95rem; transition:background .15s ease, color .15s ease;
+  }
+  .ws-cell.selecting{ background:var(--gold-light); }
+  .ws-cell.found{ background:var(--rose); color:#fff; }
+  #ws-words{ list-style:none; padding:0; margin:0; min-width:180px; }
+  #ws-words li{
+    padding:8px 14px; margin-bottom:6px; background:#fff; border-radius:8px;
+    box-shadow:inset 0 0 0 1px var(--blush-deep); font-weight:600; color:var(--plum);
+    transition:all .3s ease;
+  }
+  #ws-words li.done{ text-decoration:line-through; color:var(--rose); background:var(--blush-deep); opacity:.7; }
+  #ws-status{ margin-top:16px; text-align:center; color:var(--rose-deep); font-weight:600; min-height:1.4em; }
+  .ws-reset{
+    margin-top:16px; display:block; margin-left:auto; margin-right:auto;
+    border:none; background:var(--plum); color:#fff; padding:9px 20px; border-radius:999px; font-weight:600;
+  }
+
+  .placeholder-panel{
+    text-align:center; padding:60px 20px; background:#fff; border-radius:16px;
+    box-shadow:0 10px 26px var(--shadow); color:var(--rose-deep); font-style:italic;
+  }
+
+  /* ---- Crossword ---- */
+  #crossword-wrap{ display:flex; gap:40px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
+  #crossword-grid{
+    display:grid; gap:3px; background:var(--plum); padding:8px; border-radius:12px;
+    box-shadow:0 14px 30px var(--shadow); width:max-content;
+  }
+  .xw-cell{
+    position:relative; width:38px; height:38px; background:var(--cream); border-radius:4px;
+  }
+  .xw-cell.blocked{ background:var(--plum-deep); border-radius:4px; }
+  .xw-cell .xw-number{
+    position:absolute; top:1px; left:3px; font-size:.55rem; color:var(--rose-deep); font-weight:700;
+  }
+  .xw-cell input{
+    width:100%; height:100%; border:none; background:transparent; text-align:center;
+    font-size:1.05rem; font-weight:700; color:var(--plum); text-transform:uppercase;
+    border-radius:4px; outline:none; padding:0;
+  }
+  .xw-cell input:focus{ background:var(--gold-light); }
+  .xw-cell input.correct{ background:#bfe8c9; color:#2c6b3f; }
+  .crossword-clues{ display:flex; gap:30px; flex-wrap:wrap; min-width:220px; }
+  .crossword-clues h4{ color:var(--rose-deep); font-family:var(--font-display); margin-bottom:8px; }
+  .crossword-clues ul{ list-style:none; padding:0; margin:0; }
+  .crossword-clues li{ font-size:.85rem; margin-bottom:8px; color:var(--ink); }
+  .crossword-clues li b{ color:var(--plum); margin-right:4px; }
+  #crossword-status{ margin-top:18px; text-align:center; color:var(--rose-deep); font-weight:600; min-height:1.4em; }
+
+  /* ---- Memory match ---- */
+  #memory-wrap{ display:flex; flex-direction:column; align-items:center; }
+  #memory-grid{
+    display:grid; grid-template-columns:repeat(4, 78px); gap:12px; justify-content:center;
+  }
+  .memory-card{ width:78px; height:78px; perspective:1000px; cursor:pointer; }
+  .memory-card-inner{
+    position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.65,.05,.36,1);
+  }
+  .memory-card.flipped .memory-card-inner{ transform:rotateY(180deg); }
+  .memory-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:12px;
+    display:flex; align-items:center; justify-content:center; font-size:1.8rem;
+    box-shadow:0 8px 16px var(--shadow);
+  }
+  .memory-face.back{ background:linear-gradient(150deg, var(--rose), var(--rose-deep)); color:#fff; }
+  .memory-face.front{ background:var(--cream); transform:rotateY(180deg); }
+  .memory-card.matched .memory-face.front{ background:var(--gold-light); }
+  #memory-status{ margin-top:16px; text-align:center; color:var(--rose-deep); font-weight:600; min-height:1.4em; }
+
+  /* ============ SECTION 4: COUPONS ============ */
+  .coupon-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:26px; }
+  .coupon{ perspective:1600px; height:220px; }
+  .coupon-inner{
+    position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    transition:transform .8s cubic-bezier(.65,.05,.36,1);
+  }
+  .coupon.flipped .coupon-inner{ transform:rotateY(180deg); }
+  .coupon-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:14px;
+    box-shadow:0 14px 30px var(--shadow); padding:20px; display:flex; flex-direction:column;
+  }
+  .coupon-front{
+    background:repeating-linear-gradient(135deg, var(--cream), var(--cream) 10px, #fdf1e6 10px, #fdf1e6 20px);
+    border:2px dashed var(--gold);
+    align-items:center; justify-content:center; text-align:center; cursor:pointer;
+    transition:transform .3s ease;
+  }
+  .coupon:hover .coupon-front{ transform:translateY(-4px); }
+  .coupon-front .icon{ font-size:2.1rem; margin-bottom:10px; }
+  .coupon-front h3{ font-size:1.05rem; color:var(--rose-deep); }
+  .coupon-front .tap{ font-size:.72rem; color:var(--gold); margin-top:8px; letter-spacing:.5px; text-transform:uppercase; }
+
+  .coupon-back{
+    background:linear-gradient(150deg, var(--plum), var(--plum-deep)); color:var(--cream);
+    transform:rotateY(180deg); justify-content:space-between;
+  }
+  .coupon-back h4{ color:var(--gold-light); margin:0 0 8px; font-size:1rem; }
+  .coupon-back p{ font-size:.82rem; line-height:1.5; margin:0; flex:1; }
+  .coupon-back .claim-btn{
+    align-self:flex-start; margin-top:10px; border:none; background:var(--gold);
+    color:var(--plum-deep); padding:8px 16px; border-radius:999px; font-weight:700; font-size:.8rem;
+    transition:transform .25s ease;
+  }
+  .coupon-back .claim-btn:hover{ transform:scale(1.05); }
+  .coupon-back .flip-back-btn{
+    align-self:flex-end; background:transparent; border:none; color:var(--blush); font-size:.72rem; text-decoration:underline; margin-top:4px;
+  }
+
+  footer{ text-align:center; padding:30px; color:var(--rose-deep); font-size:.8rem; }
+</style>
+</head>
+<body>
+
+<div id="floaty"></div>
+
+<!-- ============================================================ -->
+<!-- LOCK SCREEN                                                    -->
+<!-- ============================================================ -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="seal" id="seal-icon">C&amp;A</div>
+    <h1>A Little Something For You</h1>
+    <p class="sub" id="lock-sub">Who's opening this?</p>
+
+    <div id="profile-select">
+      <button type="button" class="profile-btn" data-profile="cece">🌸<br>Cece</button>
+      <button type="button" class="profile-btn" data-profile="arar">🌙<br>Arar</button>
+    </div>
+
+    <form id="password-form" autocomplete="off" style="display:none;">
+      <div style="position:relative;">
+        <input type="password" id="password-input" placeholder="Password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:100%;" />
+        <button type="button" id="toggle-password" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); border:none; background:transparent; color:var(--rose-deep); font-size:.78rem; font-weight:600; padding:4px 6px;">show</button>
+      </div>
+      <button type="submit" id="unlock-btn">Unlock</button>
+      <button type="button" id="back-to-profiles">← choose a different profile</button>
+    </form>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DASHBOARD                                                      -->
+<!-- ============================================================ -->
+<div id="dashboard">
+  <header class="topnav">
+    <div class="brand">
+      <div class="mini-seal">♥</div>
+      <span>Cece &amp; Arar</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-target="envelopes">Open When...</button>
+      <button class="tab-btn" data-target="gallery">Art Gallery</button>
+      <button class="tab-btn" data-target="puzzles">Cozy Puzzles</button>
+      <button class="tab-btn" data-target="coupons">Date Night Coupons</button>
+      <button class="tab-btn" data-target="notifications">Notifications</button>
+    </nav>
+    <div id="whoami">
+      <span id="whoami-label"></span>
+      <button id="notif-bell" title="Notifications">🔔<span id="notif-badge" class="notif-badge" style="display:none;"></span></button>
+      <button id="switch-profile-btn">switch</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== SECTION 1: ENVELOPES ===================== -->
+    <section class="page-section active" id="envelopes">
+      <div class="section-intro">
+        <h2>Open When...</h2>
+        <p>Little envelopes for little moments. Tap one to open it.</p>
+      </div>
+
+      <div class="envelope-grid">
+
+        <!-- EDIT ENVELOPE 1 -->
+        <div class="envelope" data-id="e1">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">♥</div>
+              <h3>Open when you miss me</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you miss me</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Hey love, if you're reading this, it means you're missing me right now — and I want you to know I'm missing you right back, probably at the exact same moment. Close your eyes and picture me holding your hand. I'm not far, even when it feels that way. Replace this paragraph with whatever you actually want to say to them.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 2 -->
+        <div class="envelope" data-id="e2">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">☁</div>
+              <h3>Open when you're feeling blue</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you're feeling blue</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>I don't know exactly what's weighing on you right now, but I know you, and I know it won't last forever. You're allowed to feel exactly how you feel. Take a breath, make some tea, and remember there's someone out there who's endlessly proud of you. Replace this paragraph with your own words of comfort.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 3 -->
+        <div class="envelope" data-id="e3">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🍽</div>
+              <h3>Open when you're hungry</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you're hungry</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Go feed yourself something good, okay? Preferably something with cheese on it. I wish I could cook for you right now — until then, consider this letter your permission slip to order whatever sounds best. Replace this paragraph with your favorite food memory together.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 4 -->
+        <div class="envelope" data-id="e4">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">😂</div>
+              <h3>Open when you need a laugh</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you need a laugh</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Okay, remember that time we [insert your inside joke here]? I still laugh thinking about it. Replace this paragraph with the funniest memory you have of the two of you, or a terrible joke only they'd appreciate.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 5 -->
+        <div class="envelope" data-id="e5">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🌙</div>
+              <h3>Open when you can't sleep</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you can't sleep</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>It's late and your mind is loud — I know how that goes. Put your hand over your heart and just breathe with me for a second. Replace this paragraph with a calming thought, a bedtime story starter, or a reminder of how loved they are.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 6 -->
+        <div class="envelope" data-id="e6">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🎉</div>
+              <h3>Open when you want to celebrate</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you want to celebrate</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Whatever you're celebrating — big or small — I'm cheering for you louder than anyone. Replace this paragraph with your own congratulations and pride for whatever they've just accomplished.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 7 -->
+        <div class="envelope" data-id="e7">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">💼</div>
+              <h3>Open when you're stressed about work</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you're stressed about work</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Work is heavy right now, I know. Whatever's piling up will get sorted, one thing at a time — and you're far more capable than that inbox is giving you credit for. Step away for five minutes if you can. Replace this paragraph with your own words of encouragement.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 8 -->
+        <div class="envelope" data-id="e8">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🔥</div>
+              <h3>Open when you need motivation</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you need motivation</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>You've got this. I've watched you push through things that felt impossible before, and you always find your way. Whatever you're chasing right now, I believe in you completely. Replace this paragraph with a specific reason you're proud of them, or a goal you want to cheer them on for.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 9 -->
+        <div class="envelope" data-id="e9">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🎂</div>
+              <h3>Open when it's your birthday</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when it's your birthday</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Happy birthday, love! Another year of you existing in the world, which I consider a very good thing for everyone, especially me. Replace this paragraph with your birthday wishes, a favorite memory from a past birthday, or what you hope for them this year.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 10 -->
+        <div class="envelope" data-id="e10">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🏆</div>
+              <h3>Open when you're proud of yourself</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you're proud of yourself</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Look at you go. Whatever you just did, you should be sitting in it a little longer — you earned this feeling. Replace this paragraph with the specific thing you're proud of them for.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 11 -->
+        <div class="envelope" data-id="e11">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">🎲</div>
+              <h3>Open when you're bored</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you're bored</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>Bored, huh? Perfect excuse to do something a little silly. Replace this paragraph with a game idea, a challenge, or a random this-or-that question to keep them entertained.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT ENVELOPE 12 -->
+        <div class="envelope" data-id="e12">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front">
+              <div class="env-seal">💗</div>
+              <h3>Open when you need a reminder that you're loved</h3>
+              <div class="hint">tap to open</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Open when you need a reminder that you're loved</h4>
+              <!-- EDIT YOUR LETTER HERE -->
+              <div class="letter">
+                <p>However far or close we are right now, you are loved — completely, without conditions, on your good days and your hard ones. Replace this paragraph with your own reminder of exactly why and how much you love them.</p>
+              </div>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TO ADD MORE ENVELOPES: copy one .envelope block above, give it a new data-id, and edit the title/stickers/letter -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 2: GALLERY ===================== -->
+    <section class="page-section" id="gallery">
+      <div class="section-intro">
+        <h2>Our Little Gallery</h2>
+        <p>Hover to peek, click to remember.</p>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- frames are generated by JavaScript from the galleryData array further down — edit photos/captions/memories there, no need to touch this markup -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 3: PUZZLES ===================== -->
+    <section class="page-section" id="puzzles">
+      <div class="section-intro">
+        <h2>Cozy Puzzles</h2>
+        <p>Something small to play with when you need a break.</p>
+      </div>
+
+      <div class="puzzle-menu">
+        <button class="puzzle-tab active" data-panel="panel-wordsearch">Wordsearches</button>
+        <button class="puzzle-tab" data-panel="panel-crossword">Crosswords</button>
+        <button class="puzzle-tab" data-panel="panel-minigames">Mini Games</button>
+      </div>
+
+      <div class="puzzle-panel active" id="panel-wordsearch">
+        <div id="wordsearch-wrap">
+          <div>
+            <div id="ws-grid"></div>
+            <div id="ws-status">find every word ♥</div>
+            <button class="ws-reset" id="ws-reset-btn">shuffle a new grid</button>
+          </div>
+          <ul id="ws-words"></ul>
+        </div>
+      </div>
+
+      <!-- ===== CROSSWORD ===== -->
+      <div class="puzzle-panel" id="panel-crossword">
+        <div id="crossword-wrap">
+          <div id="crossword-grid"></div>
+          <div class="crossword-clues">
+            <div>
+              <h4>Across</h4>
+              <ul id="clues-across"></ul>
+            </div>
+            <div>
+              <h4>Down</h4>
+              <ul id="clues-down"></ul>
+            </div>
+          </div>
+        </div>
+        <div id="crossword-status">fill in every square ♥</div>
+      </div>
+
+      <!-- ===== MINI GAMES: memory match ===== -->
+      <div class="puzzle-panel" id="panel-minigames">
+        <div id="memory-wrap">
+          <div id="memory-grid"></div>
+          <div id="memory-status">find every pair ♥</div>
+          <button class="ws-reset" id="memory-reset-btn">shuffle a new board</button>
+        </div>
+        <!-- TO ADD MORE MINI GAMES: build a new module and drop its markup here alongside the memory match game -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 4: COUPONS ===================== -->
+    <section class="page-section" id="coupons">
+      <div class="section-intro">
+        <h2>Date Night Coupons</h2>
+        <p>Tap a coupon to see the fine print, then claim it and send it my way.</p>
+      </div>
+
+      <div class="coupon-grid" id="coupon-grid">
+        <!-- coupons are generated by JavaScript from the couponData array below, edit titles/descriptions there -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 5: NOTIFICATIONS ===================== -->
+    <section class="page-section" id="notifications">
+      <div class="section-intro">
+        <h2>Notifications</h2>
+        <p>Everything that's happened while you were away. Tap one to mark it read.</p>
+      </div>
+      <div id="notif-list">
+        <p id="notif-empty" style="text-align:center;color:var(--rose-deep);">Nothing yet ♥</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Gallery Modal -->
+  <div id="gallery-modal">
+    <div class="modal-card">
+      <img id="modal-img" src="" alt="enlarged memory">
+      <div class="modal-text">
+        <h3 id="modal-caption-title">About This Memory</h3>
+        <!-- captions/memories come from the galleryData array in the script below, edit them there -->
+        <p id="modal-caption-text"></p>
+      </div>
+    </div>
+    <button class="modal-close" id="modal-close-btn">&times;</button>
+  </div>
+
+  <footer>made with a lot of love, just for you ♥</footer>
+</div>
+
+<!-- Supabase client library — this MUST load before the script below runs -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/* ================= SUPABASE CONFIG =================
+   1. Create a fresh free project at https://supabase.com
+   2. Project Settings → API → copy the "Project URL" and the "anon public" key
+      from THAT SAME project (mixing keys/URLs from an old project is the #1
+      cause of 401 Unauthorized errors), paste them below
+   3. Run schema.sql (provided separately) in the Supabase SQL editor — this
+      creates every table AND the RLS policies that allow this anon key to
+      read/write them. Skipping this step is the #2 cause of 401/403 errors.
+   4. Database → Replication → turn on Realtime for: notifications, pinboard_items,
+      calendar_events
+   Until you fill these in, the site still works fully offline — nothing will
+   sync between devices/browsers yet, and you'll see harmless console warnings.
+*/
+const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
+
+let supabaseClient = null;
+try{
+  if(typeof supabase !== 'undefined' && SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.startsWith('sb_') || SUPABASE_ANON_KEY.startsWith('eyJ')){
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('[Cece&Arar] Supabase client created for', SUPABASE_URL);
+  } else {
+    console.warn('[Cece&Arar] Supabase not configured yet — running offline. Fill in SUPABASE_URL / SUPABASE_ANON_KEY at the top of the script.');
+  }
+}catch(err){
+  console.error('[Cece&Arar] Failed to create Supabase client:', err);
+}
+
+// One-time sanity check on load: tells you in the console EXACTLY what's wrong
+// (bad key, missing table, RLS blocking you) instead of a vague 401.
+async function supabaseHealthCheck(){
+  if(!supabaseClient) return;
+  const { error } = await supabaseClient.from('notifications').select('id').limit(1);
+  if(error){
+    console.error('[Cece&Arar] Supabase health check FAILED — this is why sync is not working:', error.message, error);
+    if(error.message && error.message.toLowerCase().includes('jwt')) {
+      console.error('[Cece&Arar] → Looks like an invalid/mismatched anon key. Re-copy the URL + anon key together from the SAME project (Project Settings → API).');
+    } else if(error.code === 'PGRST205' || (error.message||'').includes('Could not find the table')) {
+      console.error('[Cece&Arar] → The "notifications" table does not exist yet. Run schema.sql in the Supabase SQL editor.');
+    } else if(error.code === '42501' || (error.message||'').toLowerCase().includes('row-level security')) {
+      console.error('[Cece&Arar] → RLS is blocking the anon key. Re-run the policy section of schema.sql.');
+    }
+  } else {
+    console.log('[Cece&Arar] Supabase health check passed — connected and readable.');
+  }
+}
+supabaseHealthCheck();
+
+/* ================= FLOATING HEARTS ================= */
+(function(){
+  const container = document.getElementById('floaty');
+  const count = 16;
+  for(let i=0;i<count;i++){
+    const h = document.createElement('div');
+    h.className = 'floaty-heart';
+    h.textContent = '♥';
+    const size = 10 + Math.random()*22;
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.animationDuration = (10 + Math.random()*14) + 's';
+    h.style.animationDelay = (Math.random()*14) + 's';
+    container.appendChild(h);
+  }
+})();
+
+/* ================= TWO-PROFILE LOCK ================= */
+// EDIT YOUR TWO PASSWORDS HERE — one per profile
+const PROFILE_PASSWORDS = { cece: "CeceLovesArar", arar: "ArarLovesCece" };
+const PROFILE_LABELS = { cece: "Cece", arar: "Arar" };
+
+const lockScreen = document.getElementById('lock-screen');
+const dashboard = document.getElementById('dashboard');
+const passwordForm = document.getElementById('password-form');
+const passwordInput = document.getElementById('password-input');
+const lockError = document.getElementById('lock-error');
+const sealIcon = document.getElementById('seal-icon');
+const lockCard = document.querySelector('.lock-card');
+const profileSelect = document.getElementById('profile-select');
+const lockSub = document.getElementById('lock-sub');
+const whoamiLabel = document.getElementById('whoami-label');
+
+let currentProfile = null;
+let selectedProfile = null;
+
+function otherProfile(p){ return p === 'cece' ? 'arar' : 'cece'; }
+
+document.querySelectorAll('.profile-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    selectedProfile = btn.dataset.profile;
+    profileSelect.style.display = 'none';
+    passwordForm.style.display = 'flex';
+    lockSub.textContent = 'Hey ' + PROFILE_LABELS[selectedProfile] + ', whisper the password.';
+    lockError.textContent = '';
+    passwordInput.value = '';
+    passwordInput.focus();
+  });
+});
+
+document.getElementById('back-to-profiles').addEventListener('click', function(){
+  selectedProfile = null;
+  passwordForm.style.display = 'none';
+  profileSelect.style.display = 'flex';
+  lockError.textContent = '';
+  passwordInput.value = '';
+  lockSub.textContent = "Who's opening this?";
+});
+
+document.getElementById('toggle-password').addEventListener('click', function(){
+  const btn = this;
+  if(passwordInput.type === 'password'){
+    passwordInput.type = 'text';
+    btn.textContent = 'hide';
+  } else {
+    passwordInput.type = 'password';
+    btn.textContent = 'show';
+  }
+});
+
+passwordForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(selectedProfile && passwordInput.value.trim() === PROFILE_PASSWORDS[selectedProfile]){
+    lockError.textContent = '';
+    sealIcon.classList.add('crack');
+    setTimeout(function(){
+      lockScreen.classList.add('hidden');
+      dashboard.classList.add('show');
+      enterAsProfile(selectedProfile, true);
+    }, 500);
+  } else {
+    lockError.textContent = 'that\'s not quite it — try again';
+    lockCard.classList.remove('shake');
+    void lockCard.offsetWidth; // restart animation
+    lockCard.classList.add('shake');
+  }
+});
+
+document.getElementById('switch-profile-btn').addEventListener('click', function(){
+  localStorage.removeItem('cnaCurrentProfile');
+  currentProfile = null;
+  selectedProfile = null;
+  dashboard.classList.remove('show');
+  lockScreen.classList.remove('hidden');
+  sealIcon.classList.remove('crack');
+  passwordForm.style.display = 'none';
+  profileSelect.style.display = 'flex';
+  passwordInput.value = '';
+  lockSub.textContent = "Who's opening this?";
+});
+
+let notifChannel = null;
+
+function enterAsProfile(profile, remember){
+  currentProfile = profile;
+  whoamiLabel.textContent = 'you are ' + PROFILE_LABELS[profile];
+  if(remember){ localStorage.setItem('cnaCurrentProfile', profile); }
+  loadNotifications();
+  subscribeToNotifications();
+}
+
+// Auto sign-in on repeat visits so you don't have to log in every time
+(function(){
+  const saved = localStorage.getItem('cnaCurrentProfile');
+  if(saved && PROFILE_LABELS[saved]){
+    lockScreen.classList.add('hidden');
+    dashboard.classList.add('show');
+    enterAsProfile(saved, false);
+  }
+})();
+
+/* ================= NOTIFICATIONS ================= */
+const notifList = document.getElementById('notif-list');
+const notifEmpty = document.getElementById('notif-empty');
+const notifBadge = document.getElementById('notif-badge');
+
+// Call this from anywhere in the site to notify the OTHER profile of something.
+// Example: logNotification(currentProfile, 'letter', 'opened "Open when you miss me"');
+async function logNotification(sender, type, message){
+  if(!supabaseClient) return; // Supabase isn't configured yet — see CONFIG block above
+  const { error } = await supabaseClient.from('notifications').insert({
+    sender: sender,
+    recipient: otherProfile(sender),
+    type: type,
+    message: message,
+    read: false
+  });
+  if(error){ console.error('[Cece&Arar] Could not send notification:', error.message, error); }
+}
+
+function renderNotifications(rows){
+  notifList.querySelectorAll('.notif-item').forEach(function(n){ n.remove(); });
+  if(!rows || !rows.length){
+    notifEmpty.style.display = 'block';
+    notifBadge.style.display = 'none';
+    return;
+  }
+  notifEmpty.style.display = 'none';
+  let unread = 0;
+  rows.forEach(function(n){
+    if(!n.read) unread++;
+    const div = document.createElement('div');
+    div.className = 'notif-item' + (n.read ? '' : ' unread');
+    div.innerHTML =
+      '<strong>' + (PROFILE_LABELS[n.sender] || n.sender) + '</strong> ' + n.message +
+      '<span class="notif-meta">' + new Date(n.created_at).toLocaleString() + '</span>';
+    div.addEventListener('click', function(){ markNotificationRead(n.id); });
+    notifList.appendChild(div);
+  });
+  notifBadge.textContent = unread;
+  notifBadge.style.display = unread ? 'flex' : 'none';
+}
+
+async function markNotificationRead(id){
+  if(!supabaseClient) return;
+  await supabaseClient.from('notifications').update({ read: true }).eq('id', id);
+  loadNotifications();
+}
+
+async function loadNotifications(){
+  if(!supabaseClient || !currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('notifications')
+    .select('*')
+    .eq('recipient', currentProfile)
+    .order('created_at', { ascending: false });
+  if(!error){ renderNotifications(data); }
+  else { console.error('[Cece&Arar] Could not load notifications:', error.message, error); }
+}
+
+
+function subscribeToNotifications(){
+  if(!supabaseClient || !currentProfile) return;
+  if(notifChannel){ supabaseClient.removeChannel(notifChannel); }
+  notifChannel = supabaseClient
+    .channel('notifications-' + currentProfile)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'notifications', filter: 'recipient=eq.' + currentProfile },
+      function(){ loadNotifications(); }
+    )
+    .subscribe();
+}
+
+document.getElementById('notif-bell').addEventListener('click', function(){
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelector('[data-target="notifications"]').classList.add('active');
+  document.querySelectorAll('.page-section').forEach(function(sec){
+    sec.classList.toggle('active', sec.id === 'notifications');
+  });
+});
+
+/* ================= DASHBOARD NAV ================= */
+const tabButtons = document.querySelectorAll('.tab-btn');
+const pageSections = document.querySelectorAll('.page-section');
+tabButtons.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.getAttribute('data-target');
+    pageSections.forEach(function(sec){
+      sec.classList.toggle('active', sec.id === target);
+    });
+  });
+});
+
+/* ================= ENVELOPES ================= */
+// This is the reference example for how every future feature should notify the other
+// profile — copy this pattern (call logNotification) into the pinboard, calendar, etc.
+document.querySelectorAll('.envelope-front').forEach(function(front){
+  front.addEventListener('click', function(){
+    const env = front.closest('.envelope');
+    env.classList.add('flipped');
+    if(currentProfile && !env.dataset.notified){
+      env.dataset.notified = '1'; // avoid re-notifying every time it's reopened this visit
+      const title = front.querySelector('h3') ? front.querySelector('h3').textContent : 'a letter';
+      logNotification(currentProfile, 'letter', 'opened "' + title + '"');
+    }
+  });
+});
+document.querySelectorAll('.close-envelope').forEach(function(btn){
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    btn.closest('.envelope').classList.remove('flipped');
+  });
+});
+
+/* ================= GALLERY (data-driven, wired to your c1–c40 photos) ================= */
+// EDIT GALLERY HERE — three frame types are supported:
+//   'polaroid' — single photo, white border, needs: caption, memory, src
+//   'gilded'   — single photo, ornate gold frame, needs: caption, memory, src
+//   'strip'    — 2-3 photos stacked like a photobooth strip, needs: caption, memory, srcs (an array)
+// If a photo file isn't found yet, a soft placeholder shows instead so nothing looks broken.
+// Feel free to rewrite any caption/memory below, reorder entries, change which type a photo uses,
+// or swap which photos are grouped into a strip.
+//
+// This starter list auto-builds itself from c1.jpg–c40.jpg so the site works right away,
+// cycling polaroid → gilded → polaroid → gilded → strip (the strip step pulls in 3 consecutive
+// photos so nothing repeats). Once you're happy with it, you can absolutely delete this whole
+// block and paste in a fully hand-written array instead (like the one in your snippet) — the
+// renderer below doesn't care how galleryData was built, only that each entry has the right shape.
+const galleryData = [];
+const GALLERY_CYCLE = ['polaroid','gilded','polaroid','gilded','strip'];
+(function buildGalleryData(){
+  let photoNum = 1;
+  let cycleStep = 0;
+  const TOTAL_PHOTOS = 40;
+  while(photoNum <= TOTAL_PHOTOS){
+    const type = GALLERY_CYCLE[cycleStep % GALLERY_CYCLE.length];
+    cycleStep++;
+    if(type === 'strip' && photoNum + 2 <= TOTAL_PHOTOS){
+      galleryData.push({
+        type: 'strip',
+        caption: 'memories ' + photoNum + '\u2013' + (photoNum + 2),
+        memory: "Write the story behind this photostrip — where it was taken, what you were feeling, why it matters.",
+        srcs: ['c' + photoNum + '.jpg', 'c' + (photoNum+1) + '.jpg', 'c' + (photoNum+2) + '.jpg']
+      });
+      photoNum += 3;
+    } else {
+      galleryData.push({
+        type: (type === 'strip') ? 'polaroid' : type, // not enough photos left for a strip, fall back
+        caption: 'memory ' + photoNum,
+        memory: "Write the story behind this photo — where it was taken, what you were feeling, why it matters.",
+        src: 'c' + photoNum + '.jpg'
+      });
+      photoNum += 1;
+    }
+  }
+})();
+
+function placeholderURI(label,bg,fg,w,h,fs){
+  const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='"+w+"' height='"+h+"'><rect width='100%' height='100%' fill='"+bg+"'/><text x='50%' y='50%' font-family='Georgia' font-size='"+fs+"' text-anchor='middle' fill='"+fg+"' dy='.3em'>"+label+"</text></svg>";
+  return 'data:image/svg+xml,'+encodeURIComponent(svg);
+}
+const GALLERY_PASTELS = [
+  ['#ffd6e8','#e07ba8'], ['#dccdf5','#5a3f82'], ['#ffeef5','#7c5cad'],
+  ['#e8ddf7','#e07ba8'], ['#ffd6e8','#5a3f82'], ['#dccdf5','#7c5cad']
+];
+
+const galleryGrid = document.getElementById('gallery-grid');
+const galleryModal = document.getElementById('gallery-modal');
+const modalImg = document.getElementById('modal-img');
+const modalCaptionText = document.getElementById('modal-caption-text');
+
+function attachPlaceholderFallback(img, label, bg, fg){
+  img.onerror = function(){
+    img.onerror = null;
+    img.src = placeholderURI(label, bg, fg, 400, 400, 20);
+  };
+}
+
+galleryData.forEach(function(item, idx){
+  const pastel = GALLERY_PASTELS[idx % GALLERY_PASTELS.length];
+  const bg = pastel[0], fg = pastel[1];
+  const frame = document.createElement('figure');
+  frame.className = 'frame ' + item.type;
+
+  let firstImgSrc = '';
+
+  if(item.type === 'strip'){
+    const stripPhotos = document.createElement('div');
+    stripPhotos.className = 'strip-photos';
+    (item.srcs || []).forEach(function(src, srcIdx){
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = item.caption + ' (' + (srcIdx+1) + ')';
+      attachPlaceholderFallback(img, 'add ' + src, bg, fg);
+      stripPhotos.appendChild(img);
+      if(srcIdx === 0) firstImgSrc = src;
+    });
+    frame.appendChild(stripPhotos);
+  } else {
+    let imgHost = frame;
+    if(item.type === 'gilded'){
+      const inner = document.createElement('div');
+      inner.className = 'inner';
+      frame.appendChild(inner);
+      imgHost = inner;
+    }
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.caption;
+    attachPlaceholderFallback(img, 'add ' + item.src, bg, fg);
+    imgHost.appendChild(img);
+    firstImgSrc = item.src;
+  }
+
+  const figcap = document.createElement('figcaption');
+  figcap.textContent = item.caption;
+  frame.appendChild(figcap);
+
+  frame.addEventListener('click', function(){
+    modalImg.src = firstImgSrc;
+    modalImg.alt = item.caption;
+    modalCaptionText.textContent = item.memory;
+    galleryModal.classList.add('open');
+  });
+
+  galleryGrid.appendChild(frame);
+});
+
+document.getElementById('modal-close-btn').addEventListener('click', function(){
+  galleryModal.classList.remove('open');
+});
+galleryModal.addEventListener('click', function(e){
+  if(e.target === galleryModal) galleryModal.classList.remove('open');
+});
+
+/* ================= PUZZLES: SUBMENU ================= */
+document.querySelectorAll('.puzzle-tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.puzzle-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const panelId = tab.getAttribute('data-panel');
+    document.querySelectorAll('.puzzle-panel').forEach(function(p){
+      p.classList.toggle('active', p.id === panelId);
+    });
+  });
+});
+
+/* ================= WORD SEARCH GAME ================= */
+(function(){
+  const GRID_SIZE = 12;
+  // EDIT WORD LIST HERE — words must be uppercase and fit within a 12x12 grid
+  const WORDS = ["LOVE","HUG","KISS","HEART","CUDDLE","FOREVER","SWEET","DARLING"];
+  const DIRECTIONS = [
+    {dx:1,dy:0}, {dx:-1,dy:0}, {dx:0,dy:1}, {dx:0,dy:-1},
+    {dx:1,dy:1}, {dx:-1,dy:-1}, {dx:1,dy:-1}, {dx:-1,dy:1}
+  ];
+  const gridEl = document.getElementById('ws-grid');
+  const wordsEl = document.getElementById('ws-words');
+  const statusEl = document.getElementById('ws-status');
+  let grid, cellEls, foundWords, isSelecting, startCell, currentPath;
+
+  function buildGrid(){
+    grid = Array.from({length:GRID_SIZE}, ()=>Array(GRID_SIZE).fill(null));
+    const placed = [];
+    WORDS.forEach(function(word){
+      let ok = false, attempts = 0;
+      while(!ok && attempts < 200){
+        attempts++;
+        const dir = DIRECTIONS[Math.floor(Math.random()*DIRECTIONS.length)];
+        const row = Math.floor(Math.random()*GRID_SIZE);
+        const col = Math.floor(Math.random()*GRID_SIZE);
+        const endRow = row + dir.dy*(word.length-1);
+        const endCol = col + dir.dx*(word.length-1);
+        if(endRow < 0 || endRow >= GRID_SIZE || endCol < 0 || endCol >= GRID_SIZE) continue;
+        let fits = true;
+        for(let i=0;i<word.length;i++){
+          const r = row + dir.dy*i, c = col + dir.dx*i;
+          const existing = grid[r][c];
+          if(existing !== null && existing !== word[i]){ fits = false; break; }
+        }
+        if(!fits) continue;
+        for(let i=0;i<word.length;i++){
+          const r = row + dir.dy*i, c = col + dir.dx*i;
+          grid[r][c] = word[i];
+        }
+        ok = true;
+      }
+    });
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for(let r=0;r<GRID_SIZE;r++){
+      for(let c=0;c<GRID_SIZE;c++){
+        if(grid[r][c] === null){
+          grid[r][c] = alphabet[Math.floor(Math.random()*alphabet.length)];
+        }
+      }
+    }
+  }
+
+  function renderGrid(){
+    gridEl.style.gridTemplateColumns = 'repeat(' + GRID_SIZE + ', 34px)';
+    gridEl.innerHTML = '';
+    cellEls = [];
+    for(let r=0;r<GRID_SIZE;r++){
+      const rowArr = [];
+      for(let c=0;c<GRID_SIZE;c++){
+        const cell = document.createElement('div');
+        cell.className = 'ws-cell';
+        cell.textContent = grid[r][c];
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        gridEl.appendChild(cell);
+        rowArr.push(cell);
+      }
+      cellEls.push(rowArr);
+    }
+  }
+
+  function renderWordList(){
+    wordsEl.innerHTML = '';
+    WORDS.forEach(function(word){
+      const li = document.createElement('li');
+      li.textContent = word;
+      li.dataset.word = word;
+      wordsEl.appendChild(li);
+    });
+  }
+
+  function cellFromPoint(x,y){
+    const el = document.elementFromPoint(x,y);
+    if(el && el.classList.contains('ws-cell')) return el;
+    return null;
+  }
+
+  function getLine(start, end){
+    const r1 = +start.dataset.row, c1 = +start.dataset.col;
+    const r2 = +end.dataset.row, c2 = +end.dataset.col;
+    const dr = r2-r1, dc = c2-c1;
+    if(dr === 0 && dc === 0) return [start];
+    const steps = Math.max(Math.abs(dr), Math.abs(dc));
+    if(!(dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc))) return null;
+    const stepR = dr === 0 ? 0 : dr/Math.abs(dr);
+    const stepC = dc === 0 ? 0 : dc/Math.abs(dc);
+    const path = [];
+    for(let i=0;i<=steps;i++){
+      const r = r1 + stepR*i, c = c1 + stepC*i;
+      path.push(cellEls[r][c]);
+    }
+    return path;
+  }
+
+  function clearSelecting(){
+    document.querySelectorAll('.ws-cell.selecting').forEach(c=>c.classList.remove('selecting'));
+  }
+
+  function highlightPath(path){
+    clearSelecting();
+    if(path) path.forEach(c=>c.classList.add('selecting'));
+  }
+
+  function wordFromPath(path){
+    return path.map(c=>c.textContent).join('');
+  }
+
+  function checkMatch(path){
+    if(!path) return;
+    const word = wordFromPath(path);
+    const reversed = word.split('').reverse().join('');
+    const match = WORDS.find(w => (w === word || w === reversed) && !foundWords.has(w));
+    if(match){
+      foundWords.add(match);
+      path.forEach(c=>{ c.classList.remove('selecting'); c.classList.add('found'); });
+      const li = wordsEl.querySelector('li[data-word="'+match+'"]');
+      if(li) li.classList.add('done');
+      if(foundWords.size === WORDS.length){
+        statusEl.textContent = 'you found them all ♥';
+      } else {
+        statusEl.textContent = 'found "' + match + '"!';
+      }
+    } else {
+      clearSelecting();
+    }
+  }
+
+  function initInteraction(){
+    isSelecting = false; startCell = null; currentPath = null;
+
+    gridEl.addEventListener('mousedown', function(e){
+      if(!e.target.classList.contains('ws-cell')) return;
+      isSelecting = true; startCell = e.target; highlightPath([startCell]);
+    });
+    gridEl.addEventListener('mousemove', function(e){
+      if(!isSelecting) return;
+      const cell = cellFromPoint(e.clientX, e.clientY);
+      if(cell){ currentPath = getLine(startCell, cell); if(currentPath) highlightPath(currentPath); }
+    });
+    window.addEventListener('mouseup', function(){
+      if(!isSelecting) return;
+      isSelecting = false;
+      checkMatch(currentPath);
+      currentPath = null;
+    });
+
+    gridEl.addEventListener('touchstart', function(e){
+      const t = e.touches[0];
+      const cell = cellFromPoint(t.clientX, t.clientY);
+      if(!cell) return;
+      isSelecting = true; startCell = cell; highlightPath([startCell]);
+    }, {passive:true});
+    gridEl.addEventListener('touchmove', function(e){
+      if(!isSelecting) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      const cell = cellFromPoint(t.clientX, t.clientY);
+      if(cell){ currentPath = getLine(startCell, cell); if(currentPath) highlightPath(currentPath); }
+    }, {passive:false});
+    gridEl.addEventListener('touchend', function(){
+      if(!isSelecting) return;
+      isSelecting = false;
+      checkMatch(currentPath);
+      currentPath = null;
+    });
+  }
+
+  function newGame(){
+    foundWords = new Set();
+    statusEl.textContent = 'find every word ♥';
+    buildGrid();
+    renderGrid();
+    renderWordList();
+  }
+
+  document.getElementById('ws-reset-btn').addEventListener('click', newGame);
+  initInteraction();
+  newGame();
+})();
+
+/* ================= CROSSWORD GAME ================= */
+(function(){
+  // EDIT CROSSWORD HERE — null means a blocked/black square. Each active cell is {l: correct letter, n: clue number or null}.
+  const XW = {
+    rows:7, cols:5,
+    grid:[
+      [{l:'S',n:1}, {l:'E',n:2}, {l:'A',n:null}, {l:'L',n:null}, null],
+      [null, {l:'V',n:null}, null, null, null],
+      [{l:'H',n:3}, {l:'E',n:null}, {l:'A',n:null}, {l:'R',n:4}, {l:'T',n:null}],
+      [null, {l:'R',n:null}, null, {l:'O',n:null}, null],
+      [null, null, null, {l:'S',n:null}, null],
+      [null, null, null, {l:'E',n:null}, null],
+      [{l:'K',n:5}, {l:'I',n:null}, {l:'S',n:null}, {l:'S',n:null}, null]
+    ],
+    across:[
+      {n:1, clue:"What you break to open a love letter"},
+      {n:3, clue:"It skips a beat around you"},
+      {n:5, clue:"A little something on the lips"}
+    ],
+    down:[
+      {n:2, clue:"Together, always and ___"},
+      {n:4, clue:"Flowers that say \u2018I love you\u2019 without words"}
+    ]
+  };
+
+  const gridEl = document.getElementById('crossword-grid');
+  const statusEl = document.getElementById('crossword-status');
+  const acrossEl = document.getElementById('clues-across');
+  const downEl = document.getElementById('clues-down');
+
+  gridEl.style.gridTemplateColumns = 'repeat(' + XW.cols + ', 38px)';
+
+  let totalActive = 0, correctCount = 0;
+  const inputs = [];
+
+  XW.grid.forEach(function(row, r){
+    row.forEach(function(cell, c){
+      const cellEl = document.createElement('div');
+      if(!cell){
+        cellEl.className = 'xw-cell blocked';
+      } else {
+        cellEl.className = 'xw-cell';
+        totalActive++;
+        if(cell.n){
+          const num = document.createElement('span');
+          num.className = 'xw-number';
+          num.textContent = cell.n;
+          cellEl.appendChild(num);
+        }
+        const input = document.createElement('input');
+        input.setAttribute('maxlength','1');
+        input.dataset.answer = cell.l;
+        input.addEventListener('input', function(){
+          input.value = input.value.toUpperCase().replace(/[^A-Z]/g,'');
+          if(input.value === input.dataset.answer){
+            if(!input.classList.contains('correct')){ correctCount++; }
+            input.classList.add('correct');
+          } else {
+            if(input.classList.contains('correct')){ correctCount--; }
+            input.classList.remove('correct');
+          }
+          if(correctCount === totalActive){
+            statusEl.textContent = 'you solved it \u2665';
+          } else {
+            statusEl.textContent = 'fill in every square \u2665';
+          }
+          if(input.value && input.nextInputRef){ input.nextInputRef.focus(); }
+        });
+        cellEl.appendChild(input);
+        inputs.push(input);
+      }
+      gridEl.appendChild(cellEl);
+    });
+  });
+
+  function renderClues(list, el, label){
+    list.forEach(function(item){
+      const li = document.createElement('li');
+      li.innerHTML = '<b>' + item.n + '.</b> ' + item.clue;
+      el.appendChild(li);
+    });
+  }
+  renderClues(XW.across, acrossEl, 'Across');
+  renderClues(XW.down, downEl, 'Down');
+})();
+
+/* ================= MINI GAME: MEMORY MATCH ================= */
+(function(){
+  // EDIT MEMORY MATCH ICONS HERE — needs exactly 8 entries to make 16 cards (8 pairs) in a 4x4 board
+  const ICONS = ['\u2764\ufe0f','\ud83c\udf38','\ud83e\udd8b','\u2728','\ud83d\udc95','\ud83c\udf70','\ud83e\udded','\ud83c\udf19'];
+  const gridEl = document.getElementById('memory-grid');
+  const statusEl = document.getElementById('memory-status');
+  let flipped, matchedCount, lock;
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function newGame(){
+    flipped = []; matchedCount = 0; lock = false;
+    statusEl.textContent = 'find every pair \u2665';
+    const deck = shuffle(ICONS.concat(ICONS));
+    gridEl.innerHTML = '';
+    deck.forEach(function(icon){
+      const card = document.createElement('div');
+      card.className = 'memory-card';
+      card.dataset.icon = icon;
+      card.innerHTML =
+        '<div class="memory-card-inner">' +
+          '<div class="memory-face back">\u2661</div>' +
+          '<div class="memory-face front">' + icon + '</div>' +
+        '</div>';
+      card.addEventListener('click', function(){
+        if(lock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        flipped.push(card);
+        if(flipped.length === 2){
+          lock = true;
+          const [a,b] = flipped;
+          if(a.dataset.icon === b.dataset.icon){
+            a.classList.add('matched'); b.classList.add('matched');
+            matchedCount++;
+            flipped = []; lock = false;
+            if(matchedCount === ICONS.length){
+              statusEl.textContent = 'you matched them all \u2665';
+            }
+          } else {
+            setTimeout(function(){
+              a.classList.remove('flipped'); b.classList.remove('flipped');
+              flipped = []; lock = false;
+            }, 700);
+          }
+        }
+      });
+      gridEl.appendChild(card);
+    });
+  }
+
+  document.getElementById('memory-reset-btn').addEventListener('click', newGame);
+  newGame();
+})();
+
+/* ================= DATE NIGHT COUPONS ================= */
+// EDIT COUPON LIST HERE — each object needs an icon, title, and description
+const couponData = [
+  {icon:"🎬", title:"Movie Night on Call", desc:"Redeemable any night for a movie of your choice, watched together over a video call, snacks mandatory."},
+  {icon:"🍜", title:"Free Meal on Me", desc:"One meal, anywhere you want, entirely on me — delivery, dine-in, or homemade."},
+  {icon:"🥞", title:"Breakfast in Bed", desc:"Wake up to breakfast made just how you like it, served with zero complaints."},
+  {icon:"🛋", title:"Lazy Sunday Cuddles", desc:"A whole Sunday with nowhere to be, just us, blankets, and each other."},
+  {icon:"💆", title:"One Free Massage", desc:"Redeemable any time your shoulders need it, no questions asked."},
+  {icon:"🎁", title:"Surprise Date Night", desc:"I plan the whole thing, you just show up and enjoy it."},
+  {icon:"🎧", title:"Pick the Playlist", desc:"Full control of the music for an entire day, no vetoes, no complaints from me."},
+  {icon:"🛁", title:"Bubble Bath Night", desc:"Candles, bubbles, and zero interruptions — redeemable whenever you need to soak and unwind."},
+  {icon:"😴", title:"Do Nothing Sunday", desc:"An entire day with no plans, no chores, and no guilt about it, fully approved by me."},
+  {icon:"🍽", title:"Your Choice Restaurant", desc:"Anywhere you want to eat, no matter how far or fancy, my treat."}
+];
+
+const couponGrid = document.getElementById('coupon-grid');
+couponData.forEach(function(c, idx){
+  const wrap = document.createElement('div');
+  wrap.className = 'coupon';
+  wrap.innerHTML =
+    '<div class="coupon-inner">' +
+      '<div class="coupon-face coupon-front">' +
+        '<div class="icon">' + c.icon + '</div>' +
+        '<h3>' + c.title + '</h3>' +
+        '<div class="tap">tap to flip</div>' +
+      '</div>' +
+      '<div class="coupon-face coupon-back">' +
+        '<div>' +
+          '<h4>' + c.title + '</h4>' +
+          '<p>' + c.desc + '</p>' +
+        '</div>' +
+        '<div>' +
+          '<button class="claim-btn" data-idx="' + idx + '">Claim Coupon</button><br>' +
+          '<button class="flip-back-btn">flip back</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  couponGrid.appendChild(wrap);
+
+  wrap.querySelector('.coupon-front').addEventListener('click', function(){
+    wrap.classList.add('flipped');
+  });
+  wrap.querySelector('.flip-back-btn').addEventListener('click', function(){
+    wrap.classList.remove('flipped');
+  });
+});
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = text.split(' ');
+  let line = '';
+  let lines = [];
+  for(let i=0;i<words.length;i++){
+    const testLine = line + words[i] + ' ';
+    if(ctx.measureText(testLine).width > maxWidth && i>0){
+      lines.push(line);
+      line = words[i] + ' ';
+    } else {
+      line = testLine;
+    }
+  }
+  lines.push(line);
+  lines.forEach(function(l, i){
+    ctx.fillText(l.trim(), x, y + i*lineHeight);
+  });
+  return lines.length;
+}
+
+function claimCoupon(idx){
+  const c = couponData[idx];
+  const canvas = document.createElement('canvas');
+  canvas.width = 900; canvas.height = 560;
+  const ctx = canvas.getContext('2d');
+
+  const grad = ctx.createLinearGradient(0,0,900,560);
+  grad.addColorStop(0, '#7c5cad');
+  grad.addColorStop(1, '#5a3f82');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,900,560);
+
+  ctx.strokeStyle = '#dccdf5';
+  ctx.lineWidth = 6;
+  ctx.setLineDash([14,10]);
+  ctx.strokeRect(28,28,844,504);
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#f3e9fb';
+  ctx.font = '28px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText('♥ ONE COUPON, REDEEMABLE ANYTIME ♥', 450, 90);
+
+  ctx.font = '64px Georgia';
+  ctx.fillText(c.icon, 450, 190);
+
+  ctx.fillStyle = '#fffbfd';
+  ctx.font = 'bold 44px Georgia';
+  ctx.fillText(c.title, 450, 260);
+
+  ctx.font = '24px Georgia';
+  ctx.fillStyle = '#ffeef5';
+  ctx.textAlign = 'left';
+  wrapCanvasText(ctx, c.desc, 120, 330, 660, 34);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#dccdf5';
+  ctx.font = 'italic 20px Georgia';
+  ctx.fillText('Cece & Arar', 450, 500);
+
+  canvas.toBlob(function(blob){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = c.title.toLowerCase().replace(/[^a-z0-9]+/g,'-') + '-coupon.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+couponGrid.addEventListener('click', function(e){
+  if(e.target.classList.contains('claim-btn')){
+    claimCoupon(+e.target.dataset.idx);
+  }
+});
+</script>
+</body>
+</html>
