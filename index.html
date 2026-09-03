@@ -262,6 +262,18 @@
     padding:6px 14px; border-radius:999px; font-size:.78rem; font-weight:600;
   }
 
+  /* ============ SECTION 1b: MUSIC FOR WHEN ============ */
+  .music-front{
+    background:linear-gradient(160deg, var(--plum) 0%, var(--plum-deep) 100%);
+  }
+  .music-embed{
+    border-radius:10px; overflow:hidden; box-shadow:inset 0 0 0 1px var(--blush-deep);
+  }
+  .music-embed iframe{ display:block; }
+  .music-note{
+    font-size:.8rem; line-height:1.5; color:var(--ink); padding:0 2px;
+  }
+
   /* ============ SECTION 2: GALLERY ============ */
   .gallery-grid{
     column-count:1; column-width:230px; column-gap:30px; padding-top:10px;
@@ -674,6 +686,7 @@
     </div>
     <nav class="tabs">
       <button class="tab-btn active" data-target="envelopes">Open When...</button>
+      <button class="tab-btn" data-target="music">Music for When</button>
       <button class="tab-btn" data-target="gallery">Art Gallery</button>
       <button class="tab-btn" data-target="puzzles">Cozy Puzzles</button>
       <button class="tab-btn" data-target="coupons">Date Night Coupons</button>
@@ -928,6 +941,97 @@
         </div>
 
         <!-- TO ADD MORE ENVELOPES: copy one .envelope block above, give it a new data-id, and edit the title/stickers/letter -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 1b: MUSIC FOR WHEN ===================== -->
+    <section class="page-section" id="music">
+      <div class="section-intro">
+        <h2>Music for When...</h2>
+        <p>Little playlists for little moods. Tap a card to press play.</p>
+      </div>
+
+      <div class="envelope-grid">
+
+        <!-- EDIT MUSIC CARD 1 -->
+        <div class="envelope" data-id="m1">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front music-front">
+              <div class="env-seal">🎵</div>
+              <h3>Music for when you miss me</h3>
+              <div class="hint">tap to press play</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Music for when you miss me</h4>
+              <!-- EDIT: paste your Spotify embed src below — see the guide beneath this grid for how -->
+              <div class="music-embed">
+                <iframe src="https://open.spotify.com/embed/playlist/53fHnV3Req4xVbfzZRoZNC?utm_source=generator&si=d6bad53729e24aaa" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              </div>
+              <!-- EDIT (optional): a short note under the player -->
+              <p class="music-note">Every song on here made me think of you.</p>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT MUSIC CARD 2 -->
+        <div class="envelope" data-id="m2">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front music-front">
+              <div class="env-seal">💃</div>
+              <h3>Music for when you need to dance</h3>
+              <div class="hint">tap to press play</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Music for when you need to dance</h4>
+              <div class="music-embed">
+                <iframe src="https://open.spotify.com/embed/playlist/6tV6WrokSCzBHQjLuJPjZU?utm_source=generator&si=619ada82c62e4e23" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              </div>
+              <p class="music-note">Turn it up and be silly for three minutes.</p>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT MUSIC CARD 3 -->
+        <div class="envelope" data-id="m3">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front music-front">
+              <div class="env-seal">☎</div>
+              <h3>Music for our long calls</h3>
+              <div class="hint">tap to press play</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Music for our long calls</h4>
+              <div class="music-embed">
+                <iframe src="https://open.spotify.com/embed/playlist/6pkZk3Ea7atW08V71LQfXw?utm_source=generator&si=9296f566867e4fa6" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              </div>
+              <p class="music-note">Put this on low next time we fall asleep on a call.</p>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDIT MUSIC CARD 4 -->
+        <div class="envelope" data-id="m4">
+          <div class="envelope-inner">
+            <div class="envelope-face envelope-front music-front">
+              <div class="env-seal">✨</div>
+              <h3>Music for celebrating us</h3>
+              <div class="hint">tap to press play</div>
+            </div>
+            <div class="envelope-face envelope-back">
+              <h4>Music for celebrating us</h4>
+              <div class="music-embed">
+                <iframe src="https://open.spotify.com/embed/playlist/6xJN0s7T4hetuDstSYsZif?utm_source=generator&si=512dc104df8e40cf" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              </div>
+              <p class="music-note">For the next time we're celebrating something, big or small.</p>
+              <button class="close-envelope">close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TO ADD MORE CARDS: copy one .envelope block above, give it a new data-id, and edit the title/emoji/playlist/note -->
       </div>
     </section>
 
@@ -1422,7 +1526,8 @@ document.querySelectorAll('.envelope-front').forEach(function(front){
     if(currentProfile && !env.dataset.notified){
       env.dataset.notified = '1'; // avoid re-notifying every time it's reopened this visit
       const title = front.querySelector('h3') ? front.querySelector('h3').textContent : 'a letter';
-      logNotification(currentProfile, 'letter', 'opened "' + title + '"');
+      const isMusic = front.classList.contains('music-front');
+      logNotification(currentProfile, isMusic ? 'music' : 'letter', (isMusic ? 'played "' : 'opened "') + title + '"');
     }
   });
 });
