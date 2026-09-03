@@ -528,6 +528,62 @@
   .pin-expand-text{ white-space:pre-wrap; line-height:1.6; margin:0 0 18px; }
   #note-expand-close-btn{ background:var(--plum); color:#fff; border:none; border-radius:999px; padding:9px 18px; font-weight:600; }
 
+  /* ============ SHARED CALENDAR ============ */
+  .cal-header{
+    display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:18px;
+  }
+  .cal-nav-btn{
+    border:none; background:var(--cream); color:var(--plum); width:38px; height:38px; border-radius:50%;
+    font-size:1.1rem; box-shadow:0 6px 14px var(--shadow); transition:transform .2s ease;
+  }
+  .cal-nav-btn:hover{ transform:scale(1.08); }
+  .cal-month-label{ font-family:var(--font-display); font-size:1.3rem; color:var(--plum); min-width:200px; text-align:center; }
+  .cal-legend{ display:flex; justify-content:center; gap:22px; margin-bottom:16px; font-size:.78rem; color:var(--ink); }
+  .cal-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .cal-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .cal-dot.cece{ background:var(--rose-deep); }
+  .cal-dot.arar{ background:var(--plum); }
+  .cal-weekdays, .cal-grid{
+    display:grid; grid-template-columns:repeat(7, 1fr); gap:8px;
+  }
+  .cal-weekdays div{ text-align:center; font-size:.72rem; font-weight:700; color:var(--rose-deep); text-transform:uppercase; letter-spacing:.5px; }
+  .cal-day{
+    background:var(--cream); border-radius:12px; min-height:74px; padding:8px;
+    box-shadow:0 6px 14px var(--shadow); cursor:pointer; transition:transform .2s ease;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .cal-day:hover{ transform:translateY(-2px); }
+  .cal-day.empty{ background:transparent; box-shadow:none; cursor:default; }
+  .cal-day.today{ box-shadow:0 0 0 2px var(--rose), 0 6px 14px var(--shadow); }
+  .cal-day-num{ font-size:.82rem; font-weight:700; color:var(--plum); }
+  .cal-day-dots{ display:flex; flex-wrap:wrap; gap:3px; }
+  .cal-day-coupon{ font-size:.85rem; }
+  .cal-day-modal .pin-modal-card{ max-width:460px; }
+  .cal-tz-row{ display:flex; gap:14px; margin-bottom:16px; }
+  .cal-tz-box{
+    flex:1; background:var(--blush); border-radius:12px; padding:12px; text-align:center;
+  }
+  .cal-tz-box .city{ font-size:.72rem; font-weight:700; color:var(--rose-deep); text-transform:uppercase; letter-spacing:.4px; }
+  .cal-tz-box .time{ font-family:var(--font-display); font-size:1.3rem; color:var(--plum); margin-top:4px; }
+  .cal-event-list{ margin-bottom:14px; }
+  .cal-event-item{
+    display:flex; justify-content:space-between; align-items:center; padding:8px 12px;
+    border-radius:10px; margin-bottom:6px; font-size:.82rem; box-shadow:inset 0 0 0 1px var(--blush-deep);
+  }
+  .cal-event-item.cece{ border-left:4px solid var(--rose-deep); }
+  .cal-event-item.arar{ border-left:4px solid var(--plum); }
+  .cal-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .cal-actions button{
+    flex:1; border:none; border-radius:999px; padding:9px 14px; font-weight:600; font-size:.8rem; color:#fff;
+  }
+  #cal-mark-busy-btn{ background:var(--rose-deep); }
+  #cal-schedule-call-btn{ background:var(--plum); }
+  .cal-coupon-row{ display:flex; gap:8px; }
+  .cal-coupon-row select{
+    flex:1; border-radius:10px; border:1.5px solid var(--blush-deep); padding:8px; font-family:inherit; font-size:.8rem;
+  }
+  #cal-attach-coupon-btn{ background:var(--gold); color:var(--plum-deep); border:none; border-radius:999px; padding:8px 14px; font-weight:700; font-size:.8rem; }
+
   footer{ text-align:center; padding:30px; color:var(--rose-deep); font-size:.8rem; }
 </style>
 </head>
@@ -576,6 +632,7 @@
       <button class="tab-btn" data-target="puzzles">Cozy Puzzles</button>
       <button class="tab-btn" data-target="coupons">Date Night Coupons</button>
       <button class="tab-btn" data-target="pinboard">Pinboard</button>
+      <button class="tab-btn" data-target="calendar">Shared Calendar</button>
       <button class="tab-btn" data-target="notifications">Notifications</button>
     </nav>
     <div id="whoami">
@@ -938,7 +995,51 @@
       </div>
     </div>
 
-    <!-- ===================== SECTION 6: NOTIFICATIONS ===================== -->
+    <!-- ===================== SECTION 6: SHARED CALENDAR ===================== -->
+    <section class="page-section" id="calendar">
+      <div class="section-intro">
+        <h2>Shared Calendar</h2>
+        <p>Mark yourself busy, plan a call, or attach a claimed coupon to a day. Tap a date to see it in both time zones.</p>
+      </div>
+      <div class="cal-header">
+        <button type="button" class="cal-nav-btn" id="cal-prev-btn">‹</button>
+        <div class="cal-month-label" id="cal-month-label"></div>
+        <button type="button" class="cal-nav-btn" id="cal-next-btn">›</button>
+      </div>
+      <div class="cal-legend">
+        <span><span class="cal-dot cece"></span>Cece</span>
+        <span><span class="cal-dot arar"></span>Arar</span>
+      </div>
+      <div class="cal-weekdays">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </section>
+
+    <!-- Day detail modal -->
+    <div class="pin-modal cal-day-modal" id="cal-day-modal">
+      <div class="pin-modal-card">
+        <h3 id="cal-day-title"></h3>
+        <div class="cal-tz-row">
+          <div class="cal-tz-box"><div class="city">Tokyo</div><div class="time" id="cal-tokyo-time"></div></div>
+          <div class="cal-tz-box"><div class="city">London</div><div class="time" id="cal-london-time"></div></div>
+        </div>
+        <div class="cal-event-list" id="cal-event-list"></div>
+        <div class="cal-actions">
+          <button type="button" id="cal-mark-busy-btn">I'm busy</button>
+          <button type="button" id="cal-schedule-call-btn">Schedule a call</button>
+        </div>
+        <div class="cal-coupon-row">
+          <select id="cal-coupon-select"><option value="">Attach a claimed coupon...</option></select>
+          <button type="button" id="cal-attach-coupon-btn">Attach</button>
+        </div>
+        <div class="pin-modal-actions">
+          <button type="button" id="cal-day-close-btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== SECTION 7: NOTIFICATIONS ===================== -->
     <section class="page-section" id="notifications">
       <div class="section-intro">
         <h2>Notifications</h2>
@@ -1131,6 +1232,8 @@ function enterAsProfile(profile, remember){
   subscribeToNotifications();
   loadPinboard();
   subscribeToPinboard();
+  loadCalendarEvents();
+  subscribeToCalendar();
 }
 
 // Auto sign-in on repeat visits so you don't have to log in every time.
@@ -1372,6 +1475,194 @@ function subscribeToPinboard(){
     )
     .subscribe();
 }
+
+/* ================= SHARED CALENDAR ================= */
+let calViewDate = new Date(); calViewDate.setDate(1);
+let calEventsByDay = {}; // 'YYYY-MM-DD' -> [events]
+let calSelectedDateStr = null;
+let calChannel = null;
+let calClockInterval = null;
+
+const calGrid = document.getElementById('cal-grid');
+const calMonthLabel = document.getElementById('cal-month-label');
+const calDayModal = document.getElementById('cal-day-modal');
+const calDayTitle = document.getElementById('cal-day-title');
+const calEventList = document.getElementById('cal-event-list');
+const calCouponSelect = document.getElementById('cal-coupon-select');
+
+function dateToStr(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function renderCalendarGrid(){
+  calMonthLabel.textContent = calViewDate.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+  calGrid.querySelectorAll('.cal-day').forEach(function(el){ el.remove(); });
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayStr = dateToStr(new Date());
+
+  for(let i=0;i<firstWeekday;i++){
+    const filler = document.createElement('div');
+    filler.className = 'cal-day empty';
+    calGrid.appendChild(filler);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const cellDate = new Date(year, month, day);
+    const dStr = dateToStr(cellDate);
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (dStr === todayStr ? ' today' : '');
+    const num = document.createElement('div');
+    num.className = 'cal-day-num';
+    num.textContent = day;
+    cell.appendChild(num);
+
+    const dayEvents = calEventsByDay[dStr] || [];
+    const dots = document.createElement('div');
+    dots.className = 'cal-day-dots';
+    let hasCoupon = false;
+    dayEvents.forEach(function(ev){
+      if(ev.event_type === 'coupon'){ hasCoupon = true; return; }
+      const dot = document.createElement('span');
+      dot.className = 'cal-dot ' + ev.author;
+      dots.appendChild(dot);
+    });
+    cell.appendChild(dots);
+    if(hasCoupon){
+      const cp = document.createElement('div');
+      cp.className = 'cal-day-coupon';
+      cp.textContent = '🎁';
+      cell.appendChild(cp);
+    }
+    cell.addEventListener('click', function(){ openCalendarDay(dStr); });
+    calGrid.appendChild(cell);
+  }
+}
+
+async function loadCalendarEvents(){
+  if(!supabaseClient) return;
+  const { data, error } = await supabaseClient.from('calendar_events').select('*');
+  if(error){ console.error('[Cece&Arar] Could not load calendar:', error.message, error); return; }
+  calEventsByDay = {};
+  (data || []).forEach(function(ev){
+    const key = ev.event_date;
+    if(!calEventsByDay[key]) calEventsByDay[key] = [];
+    calEventsByDay[key].push(ev);
+  });
+  renderCalendarGrid();
+  if(calSelectedDateStr && calDayModal.classList.contains('show')){ renderCalDayEvents(calSelectedDateStr); }
+}
+
+function subscribeToCalendar(){
+  if(!supabaseClient) return;
+  if(calChannel){ supabaseClient.removeChannel(calChannel); }
+  calChannel = supabaseClient
+    .channel('calendar-events')
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'calendar_events' },
+      function(){ loadCalendarEvents(); }
+    )
+    .subscribe();
+}
+
+function updateCalClocks(){
+  const now = new Date();
+  document.getElementById('cal-tokyo-time').textContent =
+    now.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Tokyo' });
+  document.getElementById('cal-london-time').textContent =
+    now.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', timeZone:'Europe/London' });
+}
+
+function renderCalDayEvents(dStr){
+  calEventList.querySelectorAll('.cal-event-item').forEach(function(el){ el.remove(); });
+  const events = (calEventsByDay[dStr] || []).filter(function(ev){ return ev.event_type !== 'coupon'; });
+  events.forEach(function(ev){
+    const div = document.createElement('div');
+    div.className = 'cal-event-item ' + ev.author;
+    const label = ev.event_type === 'call' ? 'scheduled a call' : 'marked busy';
+    div.textContent = (PROFILE_LABELS[ev.author] || ev.author) + ' ' + label + (ev.note ? ' — ' + ev.note : '');
+    calEventList.appendChild(div);
+  });
+  const coupons = (calEventsByDay[dStr] || []).filter(function(ev){ return ev.event_type === 'coupon'; });
+  coupons.forEach(function(ev){
+    const div = document.createElement('div');
+    div.className = 'cal-event-item ' + ev.author;
+    div.textContent = '🎁 ' + (PROFILE_LABELS[ev.author] || ev.author) + ' attached "' + ev.coupon_id + '"';
+    calEventList.appendChild(div);
+  });
+}
+
+async function populateCouponSelect(){
+  calCouponSelect.innerHTML = '<option value="">Attach a claimed coupon...</option>';
+  if(!supabaseClient || !currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('coupon_claims')
+    .select('*')
+    .eq('claimed_by', currentProfile)
+    .order('claimed_at', { ascending: false });
+  if(error){ console.error('[Cece&Arar] Could not load claimed coupons:', error.message, error); return; }
+  (data || []).forEach(function(claim){
+    const opt = document.createElement('option');
+    opt.value = claim.coupon_id;
+    opt.textContent = claim.coupon_id;
+    calCouponSelect.appendChild(opt);
+  });
+}
+
+function openCalendarDay(dStr){
+  calSelectedDateStr = dStr;
+  const d = new Date(dStr + 'T00:00:00');
+  calDayTitle.textContent = d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  renderCalDayEvents(dStr);
+  populateCouponSelect();
+  updateCalClocks();
+  if(calClockInterval) clearInterval(calClockInterval);
+  calClockInterval = setInterval(updateCalClocks, 15000);
+  calDayModal.classList.add('show');
+}
+
+async function addCalendarEvent(eventType){
+  if(!currentProfile || !supabaseClient || !calSelectedDateStr) return;
+  let note = null;
+  if(eventType === 'call'){ note = prompt('Add a short note for this call (optional):') || null; }
+  const { error } = await supabaseClient.from('calendar_events').insert({
+    author: currentProfile,
+    event_date: calSelectedDateStr,
+    event_type: eventType,
+    note: note
+  });
+  if(error){ console.error('[Cece&Arar] Could not save calendar event:', error.message, error); return; }
+  logNotification(currentProfile, 'calendar', 'updated the calendar');
+}
+
+document.getElementById('cal-prev-btn').addEventListener('click', function(){
+  calViewDate.setMonth(calViewDate.getMonth() - 1);
+  renderCalendarGrid();
+});
+document.getElementById('cal-next-btn').addEventListener('click', function(){
+  calViewDate.setMonth(calViewDate.getMonth() + 1);
+  renderCalendarGrid();
+});
+document.getElementById('cal-mark-busy-btn').addEventListener('click', function(){ addCalendarEvent('busy'); });
+document.getElementById('cal-schedule-call-btn').addEventListener('click', function(){ addCalendarEvent('call'); });
+document.getElementById('cal-attach-coupon-btn').addEventListener('click', async function(){
+  const couponId = calCouponSelect.value;
+  if(!couponId || !currentProfile || !supabaseClient || !calSelectedDateStr) return;
+  const { error } = await supabaseClient.from('calendar_events').insert({
+    author: currentProfile,
+    event_date: calSelectedDateStr,
+    event_type: 'coupon',
+    coupon_id: couponId
+  });
+  if(error){ console.error('[Cece&Arar] Could not attach coupon:', error.message, error); return; }
+  logNotification(currentProfile, 'calendar', 'attached a coupon to the calendar');
+});
+document.getElementById('cal-day-close-btn').addEventListener('click', function(){
+  calDayModal.classList.remove('show');
+  if(calClockInterval) clearInterval(calClockInterval);
+});
+renderCalendarGrid();
 
 /* ================= GALLERY (data-driven, wired to your c1–c40 photos) ================= */
 // EDIT GALLERY HERE — three frame types are supported:
@@ -1910,6 +2201,14 @@ function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
 
 function claimCoupon(idx){
   const c = couponData[idx];
+  if(currentProfile && supabaseClient){
+    supabaseClient.from('coupon_claims').insert({
+      coupon_id: c.title,
+      claimed_by: currentProfile
+    }).then(function(res){
+      if(res.error){ console.error('[Cece&Arar] Could not record coupon claim:', res.error.message, res.error); }
+    });
+  }
   const canvas = document.createElement('canvas');
   canvas.width = 900; canvas.height = 560;
   const ctx = canvas.getContext('2d');
