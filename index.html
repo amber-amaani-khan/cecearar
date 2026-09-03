@@ -543,6 +543,7 @@
   .cal-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
   .cal-dot.cece{ background:var(--rose-deep); }
   .cal-dot.arar{ background:var(--plum); }
+  .cal-dot.shared{ background:var(--gold); }
   .cal-weekdays, .cal-grid{
     display:grid; grid-template-columns:repeat(7, 1fr); gap:8px;
   }
@@ -568,6 +569,12 @@
   }
   .cal-event-item.cece{ border-left:4px solid var(--rose-deep); }
   .cal-event-item.arar{ border-left:4px solid var(--plum); }
+  .cal-event-item.shared{ border-left:4px solid var(--gold); }
+  .cal-event-delete-btn{
+    border:none; background:transparent; color:inherit; opacity:.55; font-size:1rem; line-height:1;
+    cursor:pointer; padding:2px 6px; margin-left:8px; transition:opacity .15s ease;
+  }
+  .cal-event-delete-btn:hover{ opacity:1; }
   .cal-timeline-wrap{
     display:flex; max-height:320px; overflow-y:auto; border-radius:12px;
     box-shadow:inset 0 0 0 1px var(--blush-deep); margin-bottom:16px; background:var(--cream);
@@ -591,8 +598,19 @@
   }
   .cal-timeline-event.cece{ background:var(--rose-deep); }
   .cal-timeline-event.arar{ background:var(--plum); }
+  .cal-timeline-event.shared{ background:var(--gold); color:var(--plum-deep); }
+  .cal-timeline-event-delete{
+    position:absolute; top:1px; right:3px; border:none; background:transparent; color:inherit;
+    opacity:.7; font-size:.75rem; line-height:1; cursor:pointer; padding:0 2px;
+  }
+  .cal-timeline-event-delete:hover{ opacity:1; }
   .cal-timeline-now-line{ position:absolute; left:0; right:0; height:2px; background:var(--gold); z-index:3; }
   .cal-add-event-form{ margin-bottom:14px; }
+  .cal-shared-check{
+    display:flex; align-items:center; gap:6px; font-size:.78rem; color:var(--plum);
+    margin-bottom:10px; cursor:pointer; user-select:none;
+  }
+  .cal-shared-check input{ accent-color:var(--gold); cursor:pointer; }
   #cal-event-title{
     width:100%; border-radius:10px; border:1.5px solid var(--blush-deep); padding:9px 12px;
     font-family:inherit; font-size:.85rem; margin-bottom:8px; box-sizing:border-box;
@@ -1037,6 +1055,7 @@
       <div class="cal-legend">
         <span><span class="cal-dot cece"></span>Cece</span>
         <span><span class="cal-dot arar"></span>Arar</span>
+        <span><span class="cal-dot shared"></span>Shared</span>
       </div>
       <div class="cal-weekdays">
         <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
@@ -1060,6 +1079,10 @@
               <option value="Asia/Tokyo">Tokyo time</option>
             </select>
           </div>
+          <label class="cal-shared-check">
+            <input type="checkbox" id="cal-event-shared">
+            This is a shared activity (both of us)
+          </label>
           <button type="button" id="cal-add-event-btn">Add to calendar</button>
         </div>
 
@@ -1571,7 +1594,7 @@ function renderCalendarGrid(){
     dayEvents.forEach(function(ev){
       if(ev.event_type === 'coupon'){ hasCoupon = true; return; }
       const dot = document.createElement('span');
-      dot.className = 'cal-dot ' + ev.author;
+      dot.className = 'cal-dot ' + (ev.shared ? 'shared' : ev.author);
       dots.appendChild(dot);
     });
     cell.appendChild(dots);
@@ -1669,10 +1692,23 @@ function renderTimeline(dStr){
     topH = Math.max(0, Math.min(24, topH));
     bottomH = Math.max(topH + 0.3, Math.min(24, bottomH));
     const bar = document.createElement('div');
-    bar.className = 'cal-timeline-event ' + ev.author;
+    bar.className = 'cal-timeline-event ' + (ev.shared ? 'shared' : ev.author);
     bar.style.top = (topH * ROW_H) + 'px';
     bar.style.height = ((bottomH - topH) * ROW_H) + 'px';
-    bar.textContent = (ev.title || '(untitled)') + ' — ' + (PROFILE_LABELS[ev.author] || ev.author);
+    bar.style.position = 'absolute';
+    const label = document.createElement('span');
+    label.textContent = (ev.title || '(untitled)') + (ev.shared ? ' — both of us' : ' — ' + (PROFILE_LABELS[ev.author] || ev.author));
+    bar.appendChild(label);
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'cal-timeline-event-delete';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Remove this event';
+    delBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      deleteCalendarEvent(ev.id);
+    });
+    bar.appendChild(delBtn);
     track.appendChild(bar);
   });
 
@@ -1694,7 +1730,16 @@ function renderCalDayEvents(dStr){
   coupons.forEach(function(ev){
     const div = document.createElement('div');
     div.className = 'cal-event-item ' + ev.author;
-    div.textContent = '🎁 ' + (PROFILE_LABELS[ev.author] || ev.author) + ' attached "' + ev.coupon_id + '"';
+    const label = document.createElement('span');
+    label.textContent = '🎁 ' + (PROFILE_LABELS[ev.author] || ev.author) + ' attached "' + ev.coupon_id + '"';
+    div.appendChild(label);
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'cal-event-delete-btn';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Remove this coupon from the calendar';
+    delBtn.addEventListener('click', function(){ deleteCalendarEvent(ev.id); });
+    div.appendChild(delBtn);
     calEventList.appendChild(div);
   });
 }
@@ -1744,6 +1789,7 @@ document.getElementById('cal-add-event-btn').addEventListener('click', async fun
   const startTime = document.getElementById('cal-event-start').value;
   const endTime = document.getElementById('cal-event-end').value;
   const tz = document.getElementById('cal-event-tz').value;
+  const shared = document.getElementById('cal-event-shared').checked;
   if(!title || !startTime || !endTime || !currentProfile || !supabaseClient || !calSelectedDateStr) return;
   const startAt = zonedTimeToUtc(calSelectedDateStr, startTime, tz);
   const endAt = zonedTimeToUtc(calSelectedDateStr, endTime, tz);
@@ -1753,14 +1799,25 @@ document.getElementById('cal-add-event-btn').addEventListener('click', async fun
     event_type: 'event',
     title: title,
     start_at: startAt.toISOString(),
-    end_at: endAt.toISOString()
+    end_at: endAt.toISOString(),
+    shared: shared
   });
   if(error){ console.error('[Cece&Arar] Could not add event:', error.message, error); return; }
   logNotification(currentProfile, 'calendar', 'added "' + title + '" to the calendar');
   document.getElementById('cal-event-title').value = '';
   document.getElementById('cal-event-start').value = '';
   document.getElementById('cal-event-end').value = '';
+  document.getElementById('cal-event-shared').checked = false;
 });
+
+async function deleteCalendarEvent(id){
+  if(!supabaseClient || !id) return;
+  const ok = window.confirm('Remove this from the shared calendar?');
+  if(!ok) return;
+  const { error } = await supabaseClient.from('calendar_events').delete().eq('id', id);
+  if(error){ console.error('[Cece&Arar] Could not remove event:', error.message, error); return; }
+  logNotification(currentProfile, 'calendar', 'removed something from the calendar');
+}
 document.getElementById('cal-attach-coupon-btn').addEventListener('click', async function(){
   const couponId = calCouponSelect.value;
   if(!couponId || !currentProfile || !supabaseClient || !calSelectedDateStr) return;
