@@ -989,7 +989,8 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 let supabaseClient = null;
 try{
-  if(typeof supabase !== 'undefined' && SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.startsWith('sb_') || SUPABASE_ANON_KEY.startsWith('eyJ')){
+  const keyLooksValid = SUPABASE_ANON_KEY.startsWith('sb_') || SUPABASE_ANON_KEY.startsWith('eyJ');
+  if(typeof supabase !== 'undefined' && SUPABASE_URL.startsWith('https://') && keyLooksValid){
     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     console.log('[Cece&Arar] Supabase client created for', SUPABASE_URL);
   } else {
@@ -1132,15 +1133,17 @@ function enterAsProfile(profile, remember){
   subscribeToPinboard();
 }
 
-// Auto sign-in on repeat visits so you don't have to log in every time
-(function(){
+// Auto sign-in on repeat visits so you don't have to log in every time.
+// Wrapped as a function and called at the very bottom of the script (not here)
+// so it only runs after every other button/listener on the page is ready.
+function trySavedAutoLogin(){
   const saved = localStorage.getItem('cnaCurrentProfile');
   if(saved && PROFILE_LABELS[saved]){
     lockScreen.classList.add('hidden');
     dashboard.classList.add('show');
     enterAsProfile(saved, false);
   }
-})();
+}
 
 /* ================= NOTIFICATIONS ================= */
 const notifList = document.getElementById('notif-list');
@@ -1962,6 +1965,12 @@ couponGrid.addEventListener('click', function(e){
     claimCoupon(+e.target.dataset.idx);
   }
 });
+
+/* ================= AUTO-LOGIN — must run last =================
+   Every button, form, and const above this line needs to exist before
+   we try to auto-log-in a returning visitor, so this call stays at the
+   very bottom of the script no matter what gets added above it later. */
+trySavedAutoLogin();
 </script>
 </body>
 </html>
