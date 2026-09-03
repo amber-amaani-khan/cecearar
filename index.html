@@ -559,25 +559,53 @@
   .cal-day-dots{ display:flex; flex-wrap:wrap; gap:3px; }
   .cal-day-coupon{ font-size:.85rem; }
   .cal-day-modal .pin-modal-card{ max-width:460px; }
-  .cal-tz-row{ display:flex; gap:14px; margin-bottom:16px; }
-  .cal-tz-box{
-    flex:1; background:var(--blush); border-radius:12px; padding:12px; text-align:center;
-  }
-  .cal-tz-box .city{ font-size:.72rem; font-weight:700; color:var(--rose-deep); text-transform:uppercase; letter-spacing:.4px; }
-  .cal-tz-box .time{ font-family:var(--font-display); font-size:1.3rem; color:var(--plum); margin-top:4px; }
-  .cal-event-list{ margin-bottom:14px; }
+  .cal-tz-row{ display:flex; gap:14px; margin-bottom:10px; }
+  .cal-tz-row-label{ text-align:center; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; color:var(--rose-deep); margin-bottom:6px; }
+  .cal-event-list{ margin-bottom:10px; }
   .cal-event-item{
     display:flex; justify-content:space-between; align-items:center; padding:8px 12px;
     border-radius:10px; margin-bottom:6px; font-size:.82rem; box-shadow:inset 0 0 0 1px var(--blush-deep);
   }
   .cal-event-item.cece{ border-left:4px solid var(--rose-deep); }
   .cal-event-item.arar{ border-left:4px solid var(--plum); }
-  .cal-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
-  .cal-actions button{
-    flex:1; border:none; border-radius:999px; padding:9px 14px; font-weight:600; font-size:.8rem; color:#fff;
+  .cal-timeline-wrap{
+    display:flex; max-height:320px; overflow-y:auto; border-radius:12px;
+    box-shadow:inset 0 0 0 1px var(--blush-deep); margin-bottom:16px; background:var(--cream);
   }
-  #cal-mark-busy-btn{ background:var(--rose-deep); }
-  #cal-schedule-call-btn{ background:var(--plum); }
+  .cal-tz-col{ width:62px; flex-shrink:0; }
+  .cal-tz-col-header{
+    position:sticky; top:0; background:var(--cream); font-size:.65rem; font-weight:700; text-align:center;
+    padding:4px 0; color:var(--rose-deep); text-transform:uppercase; letter-spacing:.3px; z-index:2;
+  }
+  .cal-tz-label{
+    font-size:.66rem; color:var(--ink); display:flex; align-items:center; justify-content:center;
+    border-bottom:1px dashed var(--blush); box-sizing:border-box;
+  }
+  .cal-tz-col:first-child .cal-tz-label{ border-right:1px solid var(--blush-deep); }
+  .cal-tz-col:last-child .cal-tz-label{ border-left:1px solid var(--blush-deep); }
+  .cal-timeline-track{ position:relative; flex:1; }
+  .cal-timeline-hourline{ position:absolute; left:0; right:0; border-top:1px dashed var(--blush); box-sizing:border-box; }
+  .cal-timeline-event{
+    position:absolute; left:4px; right:4px; border-radius:8px; padding:2px 8px; color:#fff; font-size:.7rem;
+    line-height:1.3; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,.2);
+  }
+  .cal-timeline-event.cece{ background:var(--rose-deep); }
+  .cal-timeline-event.arar{ background:var(--plum); }
+  .cal-timeline-now-line{ position:absolute; left:0; right:0; height:2px; background:var(--gold); z-index:3; }
+  .cal-add-event-form{ margin-bottom:14px; }
+  #cal-event-title{
+    width:100%; border-radius:10px; border:1.5px solid var(--blush-deep); padding:9px 12px;
+    font-family:inherit; font-size:.85rem; margin-bottom:8px; box-sizing:border-box;
+  }
+  .cal-time-row{ display:flex; align-items:center; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+  .cal-time-row input[type=time], .cal-time-row select{
+    border-radius:8px; border:1.5px solid var(--blush-deep); padding:6px 8px; font-family:inherit; font-size:.8rem;
+  }
+  .cal-time-row span{ font-size:.78rem; color:var(--ink); }
+  #cal-add-event-btn{
+    background:var(--plum); color:#fff; border:none; border-radius:999px; padding:9px 18px;
+    font-weight:700; font-size:.82rem; width:100%;
+  }
   .cal-coupon-row{ display:flex; gap:8px; }
   .cal-coupon-row select{
     flex:1; border-radius:10px; border:1.5px solid var(--blush-deep); padding:8px; font-family:inherit; font-size:.8rem;
@@ -999,7 +1027,7 @@
     <section class="page-section" id="calendar">
       <div class="section-intro">
         <h2>Shared Calendar</h2>
-        <p>Mark yourself busy, plan a call, or attach a claimed coupon to a day. Tap a date to see it in both time zones.</p>
+        <p>Add a timed note to a day — like "First Exam" — and it lines up automatically in both time zones.</p>
       </div>
       <div class="cal-header">
         <button type="button" class="cal-nav-btn" id="cal-prev-btn">‹</button>
@@ -1018,17 +1046,36 @@
 
     <!-- Day detail modal -->
     <div class="pin-modal cal-day-modal" id="cal-day-modal">
-      <div class="pin-modal-card">
+      <div class="pin-modal-card" style="max-width:520px;">
         <h3 id="cal-day-title"></h3>
-        <div class="cal-tz-row">
-          <div class="cal-tz-box"><div class="city">Tokyo</div><div class="time" id="cal-tokyo-time"></div></div>
-          <div class="cal-tz-box"><div class="city">London</div><div class="time" id="cal-london-time"></div></div>
+
+        <div class="cal-add-event-form">
+          <input type="text" id="cal-event-title" placeholder="e.g. First Exam" maxlength="80">
+          <div class="cal-time-row">
+            <input type="time" id="cal-event-start">
+            <span>to</span>
+            <input type="time" id="cal-event-end">
+            <select id="cal-event-tz">
+              <option value="Europe/London">London time</option>
+              <option value="Asia/Tokyo">Tokyo time</option>
+            </select>
+          </div>
+          <button type="button" id="cal-add-event-btn">Add to calendar</button>
         </div>
+
+        <div class="cal-timeline-wrap" id="cal-timeline-wrap">
+          <div class="cal-tz-col">
+            <div class="cal-tz-col-header">Tokyo</div>
+            <div id="cal-tokyo-col"></div>
+          </div>
+          <div class="cal-timeline-track" id="cal-timeline-track"></div>
+          <div class="cal-tz-col">
+            <div class="cal-tz-col-header">London</div>
+            <div id="cal-london-col"></div>
+          </div>
+        </div>
+
         <div class="cal-event-list" id="cal-event-list"></div>
-        <div class="cal-actions">
-          <button type="button" id="cal-mark-busy-btn">I'm busy</button>
-          <button type="button" id="cal-schedule-call-btn">Schedule a call</button>
-        </div>
         <div class="cal-coupon-row">
           <select id="cal-coupon-select"><option value="">Attach a claimed coupon...</option></select>
           <button type="button" id="cal-attach-coupon-btn">Attach</button>
@@ -1481,7 +1528,6 @@ let calViewDate = new Date(); calViewDate.setDate(1);
 let calEventsByDay = {}; // 'YYYY-MM-DD' -> [events]
 let calSelectedDateStr = null;
 let calChannel = null;
-let calClockInterval = null;
 
 const calGrid = document.getElementById('cal-grid');
 const calMonthLabel = document.getElementById('cal-month-label');
@@ -1551,7 +1597,7 @@ async function loadCalendarEvents(){
     calEventsByDay[key].push(ev);
   });
   renderCalendarGrid();
-  if(calSelectedDateStr && calDayModal.classList.contains('show')){ renderCalDayEvents(calSelectedDateStr); }
+  if(calSelectedDateStr && calDayModal.classList.contains('show')){ renderCalDayEvents(calSelectedDateStr); renderTimeline(calSelectedDateStr); }
 }
 
 function subscribeToCalendar(){
@@ -1566,24 +1612,84 @@ function subscribeToCalendar(){
     .subscribe();
 }
 
-function updateCalClocks(){
-  const now = new Date();
-  document.getElementById('cal-tokyo-time').textContent =
-    now.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Tokyo' });
-  document.getElementById('cal-london-time').textContent =
-    now.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', timeZone:'Europe/London' });
+const ROW_H = 34; // px height of each hour row in the day timeline
+
+function timelineDateParts(dStr){
+  const parts = dStr.split('-').map(Number);
+  return { y: parts[0], m: parts[1], d: parts[2] };
+}
+
+// Interprets timeStr (e.g. "14:00") as wall-clock time on dateStr IN timeZone,
+// and returns the correct absolute UTC Date for it (handles DST automatically).
+function zonedTimeToUtc(dateStr, timeStr, timeZone){
+  const naiveUTC = new Date(dateStr + 'T' + timeStr + ':00Z');
+  const asZoned = new Date(naiveUTC.toLocaleString('en-US', { timeZone: timeZone }));
+  const diff = naiveUTC.getTime() - asZoned.getTime();
+  return new Date(naiveUTC.getTime() + diff);
+}
+
+function buildTzColumn(containerEl, dStr, timeZone){
+  containerEl.innerHTML = '';
+  const { y, m, d } = timelineDateParts(dStr);
+  for(let h=0; h<24; h++){
+    const div = document.createElement('div');
+    div.className = 'cal-tz-label';
+    div.style.height = ROW_H + 'px';
+    const ref = new Date(Date.UTC(y, m-1, d, h, 0, 0));
+    div.textContent = ref.toLocaleTimeString(undefined, { hour:'numeric', hour12:true, timeZone: timeZone });
+    containerEl.appendChild(div);
+  }
+}
+
+function renderTimeline(dStr){
+  const tokyoCol = document.getElementById('cal-tokyo-col');
+  const londonCol = document.getElementById('cal-london-col');
+  const track = document.getElementById('cal-timeline-track');
+  buildTzColumn(tokyoCol, dStr, 'Asia/Tokyo');
+  buildTzColumn(londonCol, dStr, 'Europe/London');
+
+  track.innerHTML = '';
+  track.style.height = (ROW_H * 24) + 'px';
+  for(let h=0; h<24; h++){
+    const line = document.createElement('div');
+    line.className = 'cal-timeline-hourline';
+    line.style.top = (h * ROW_H) + 'px';
+    track.appendChild(line);
+  }
+
+  const { y, m, d } = timelineDateParts(dStr);
+  const dayStartUTC = Date.UTC(y, m-1, d, 0, 0, 0);
+
+  const events = (calEventsByDay[dStr] || []).filter(function(ev){ return ev.event_type === 'event' && ev.start_at; });
+  events.forEach(function(ev){
+    const startMs = new Date(ev.start_at).getTime();
+    const endMs = ev.end_at ? new Date(ev.end_at).getTime() : startMs + 30*60000;
+    let topH = (startMs - dayStartUTC) / 3600000;
+    let bottomH = (endMs - dayStartUTC) / 3600000;
+    topH = Math.max(0, Math.min(24, topH));
+    bottomH = Math.max(topH + 0.3, Math.min(24, bottomH));
+    const bar = document.createElement('div');
+    bar.className = 'cal-timeline-event ' + ev.author;
+    bar.style.top = (topH * ROW_H) + 'px';
+    bar.style.height = ((bottomH - topH) * ROW_H) + 'px';
+    bar.textContent = (ev.title || '(untitled)') + ' — ' + (PROFILE_LABELS[ev.author] || ev.author);
+    track.appendChild(bar);
+  });
+
+  const todayStr = dateToStr(new Date());
+  if(dStr === todayStr){
+    const nowH = (Date.now() - dayStartUTC) / 3600000;
+    if(nowH >= 0 && nowH <= 24){
+      const line = document.createElement('div');
+      line.className = 'cal-timeline-now-line';
+      line.style.top = (nowH * ROW_H) + 'px';
+      track.appendChild(line);
+    }
+  }
 }
 
 function renderCalDayEvents(dStr){
   calEventList.querySelectorAll('.cal-event-item').forEach(function(el){ el.remove(); });
-  const events = (calEventsByDay[dStr] || []).filter(function(ev){ return ev.event_type !== 'coupon'; });
-  events.forEach(function(ev){
-    const div = document.createElement('div');
-    div.className = 'cal-event-item ' + ev.author;
-    const label = ev.event_type === 'call' ? 'scheduled a call' : 'marked busy';
-    div.textContent = (PROFILE_LABELS[ev.author] || ev.author) + ' ' + label + (ev.note ? ' — ' + ev.note : '');
-    calEventList.appendChild(div);
-  });
   const coupons = (calEventsByDay[dStr] || []).filter(function(ev){ return ev.event_type === 'coupon'; });
   coupons.forEach(function(ev){
     const div = document.createElement('div');
@@ -1614,26 +1720,15 @@ function openCalendarDay(dStr){
   calSelectedDateStr = dStr;
   const d = new Date(dStr + 'T00:00:00');
   calDayTitle.textContent = d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  document.getElementById('cal-event-title').value = '';
+  document.getElementById('cal-event-start').value = '';
+  document.getElementById('cal-event-end').value = '';
+  renderTimeline(dStr);
   renderCalDayEvents(dStr);
   populateCouponSelect();
-  updateCalClocks();
-  if(calClockInterval) clearInterval(calClockInterval);
-  calClockInterval = setInterval(updateCalClocks, 15000);
   calDayModal.classList.add('show');
-}
-
-async function addCalendarEvent(eventType){
-  if(!currentProfile || !supabaseClient || !calSelectedDateStr) return;
-  let note = null;
-  if(eventType === 'call'){ note = prompt('Add a short note for this call (optional):') || null; }
-  const { error } = await supabaseClient.from('calendar_events').insert({
-    author: currentProfile,
-    event_date: calSelectedDateStr,
-    event_type: eventType,
-    note: note
-  });
-  if(error){ console.error('[Cece&Arar] Could not save calendar event:', error.message, error); return; }
-  logNotification(currentProfile, 'calendar', 'updated the calendar');
+  const wrap = document.getElementById('cal-timeline-wrap');
+  wrap.scrollTop = Math.max(0, 8 * ROW_H - 60); // start scrolled to roughly 8am
 }
 
 document.getElementById('cal-prev-btn').addEventListener('click', function(){
@@ -1644,8 +1739,28 @@ document.getElementById('cal-next-btn').addEventListener('click', function(){
   calViewDate.setMonth(calViewDate.getMonth() + 1);
   renderCalendarGrid();
 });
-document.getElementById('cal-mark-busy-btn').addEventListener('click', function(){ addCalendarEvent('busy'); });
-document.getElementById('cal-schedule-call-btn').addEventListener('click', function(){ addCalendarEvent('call'); });
+document.getElementById('cal-add-event-btn').addEventListener('click', async function(){
+  const title = document.getElementById('cal-event-title').value.trim();
+  const startTime = document.getElementById('cal-event-start').value;
+  const endTime = document.getElementById('cal-event-end').value;
+  const tz = document.getElementById('cal-event-tz').value;
+  if(!title || !startTime || !endTime || !currentProfile || !supabaseClient || !calSelectedDateStr) return;
+  const startAt = zonedTimeToUtc(calSelectedDateStr, startTime, tz);
+  const endAt = zonedTimeToUtc(calSelectedDateStr, endTime, tz);
+  const { error } = await supabaseClient.from('calendar_events').insert({
+    author: currentProfile,
+    event_date: calSelectedDateStr,
+    event_type: 'event',
+    title: title,
+    start_at: startAt.toISOString(),
+    end_at: endAt.toISOString()
+  });
+  if(error){ console.error('[Cece&Arar] Could not add event:', error.message, error); return; }
+  logNotification(currentProfile, 'calendar', 'added "' + title + '" to the calendar');
+  document.getElementById('cal-event-title').value = '';
+  document.getElementById('cal-event-start').value = '';
+  document.getElementById('cal-event-end').value = '';
+});
 document.getElementById('cal-attach-coupon-btn').addEventListener('click', async function(){
   const couponId = calCouponSelect.value;
   if(!couponId || !currentProfile || !supabaseClient || !calSelectedDateStr) return;
@@ -1660,7 +1775,6 @@ document.getElementById('cal-attach-coupon-btn').addEventListener('click', async
 });
 document.getElementById('cal-day-close-btn').addEventListener('click', function(){
   calDayModal.classList.remove('show');
-  if(calClockInterval) clearInterval(calClockInterval);
 });
 renderCalendarGrid();
 
