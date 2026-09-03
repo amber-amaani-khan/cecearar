@@ -274,6 +274,39 @@
     font-size:.8rem; line-height:1.5; color:var(--ink); padding:0 2px;
   }
 
+  /* ============ SECTION 1c: PHOTOBOOTH ============ */
+  .photobooth-wrap{
+    max-width:420px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:16px;
+  }
+  .photobooth-stage{
+    position:relative; width:100%; aspect-ratio:4/3; background:var(--plum-deep);
+    border-radius:16px; overflow:hidden; box-shadow:0 14px 30px var(--shadow);
+  }
+  #pb-video{ width:100%; height:100%; object-fit:cover; transform:scaleX(-1); display:block; }
+  .pb-countdown{
+    display:none; position:absolute; inset:0; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-size:5rem; color:#fff; text-shadow:0 4px 14px rgba(0,0,0,.4);
+    background:rgba(0,0,0,.15);
+  }
+  .pb-flash{
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; transition:opacity .1s ease;
+  }
+  .pb-flash.flash{ opacity:.85; }
+  .photobooth-controls{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+  .pb-btn{
+    border:none; background:var(--blush-deep); color:var(--plum); padding:10px 20px;
+    border-radius:999px; font-size:.85rem; font-weight:600; cursor:pointer; transition:transform .15s ease;
+    font-family:inherit;
+  }
+  .pb-btn:hover{ transform:translateY(-2px); }
+  .pb-btn:disabled{ opacity:.6; cursor:default; transform:none; }
+  .pb-btn-primary{ background:linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff; }
+  .pb-hint{ font-size:.75rem; color:var(--rose-deep); text-align:center; max-width:280px; }
+  .photobooth-preview{ display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; }
+  .photobooth-preview h3{ font-size:1rem; }
+  #pb-canvas{ max-width:220px; width:100%; border-radius:10px; box-shadow:0 14px 30px var(--shadow); }
+  .pb-status{ font-size:.8rem; color:var(--rose-deep); min-height:1.2em; text-align:center; }
+
   /* ============ SECTION 2: GALLERY ============ */
   .gallery-grid{
     column-count:1; column-width:230px; column-gap:30px; padding-top:10px;
@@ -687,6 +720,7 @@
     <nav class="tabs">
       <button class="tab-btn active" data-target="envelopes">Open When...</button>
       <button class="tab-btn" data-target="music">Music for When</button>
+      <button class="tab-btn" data-target="photobooth">Photobooth</button>
       <button class="tab-btn" data-target="gallery">Art Gallery</button>
       <button class="tab-btn" data-target="puzzles">Cozy Puzzles</button>
       <button class="tab-btn" data-target="coupons">Date Night Coupons</button>
@@ -965,7 +999,7 @@
               <h4>Music for when you miss me</h4>
               <!-- EDIT: paste your Spotify embed src below — see the guide beneath this grid for how -->
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/53fHnV3Req4xVbfzZRoZNC?utm_source=generator&si=d6bad53729e24aaa" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
               <!-- EDIT (optional): a short note under the player -->
               <p class="music-note">Every song on here made me think of you.</p>
@@ -985,7 +1019,7 @@
             <div class="envelope-face envelope-back">
               <h4>Music for when you need to dance</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6tV6WrokSCzBHQjLuJPjZU?utm_source=generator&si=619ada82c62e4e23" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
               <p class="music-note">Turn it up and be silly for three minutes.</p>
               <button class="close-envelope">close</button>
@@ -1004,7 +1038,7 @@
             <div class="envelope-face envelope-back">
               <h4>Music for our long calls</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6pkZk3Ea7atW08V71LQfXw?utm_source=generator&si=9296f566867e4fa6" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
               <p class="music-note">Put this on low next time we fall asleep on a call.</p>
               <button class="close-envelope">close</button>
@@ -1023,7 +1057,7 @@
             <div class="envelope-face envelope-back">
               <h4>Music for celebrating us</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6xJN0s7T4hetuDstSYsZif?utm_source=generator&si=512dc104df8e40cf" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
               <p class="music-note">For the next time we're celebrating something, big or small.</p>
               <button class="close-envelope">close</button>
@@ -1032,6 +1066,42 @@
         </div>
 
         <!-- TO ADD MORE CARDS: copy one .envelope block above, give it a new data-id, and edit the title/emoji/playlist/note -->
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 1c: PHOTOBOOTH ===================== -->
+    <section class="page-section" id="photobooth">
+      <div class="section-intro">
+        <h2>Photobooth</h2>
+        <p>Take a quick 3-shot photostrip together — it'll land in the Art Gallery and get pinned to the board.</p>
+      </div>
+
+      <div class="photobooth-wrap">
+        <div class="photobooth-stage">
+          <video id="pb-video" autoplay playsinline muted></video>
+          <div class="pb-countdown" id="pb-countdown"></div>
+          <div class="pb-flash" id="pb-flash"></div>
+        </div>
+
+        <div class="photobooth-controls" id="pb-controls-start">
+          <button type="button" class="pb-btn pb-btn-primary" id="pb-start-camera-btn">Start Camera</button>
+          <p class="pb-hint">Your browser will ask for camera permission — allow it, then get ready to pose 3 times!</p>
+        </div>
+
+        <div class="photobooth-controls" id="pb-controls-capture" style="display:none;">
+          <button type="button" class="pb-btn pb-btn-primary" id="pb-capture-btn">Take the photostrip 📸</button>
+          <button type="button" class="pb-btn" id="pb-stop-camera-btn">Stop camera</button>
+        </div>
+
+        <div class="photobooth-preview" id="pb-preview" style="display:none;">
+          <h3>Here's your strip!</h3>
+          <canvas id="pb-canvas"></canvas>
+          <div class="photobooth-controls">
+            <button type="button" class="pb-btn pb-btn-primary" id="pb-save-btn">Save to Gallery &amp; Pinboard ♥</button>
+            <button type="button" class="pb-btn" id="pb-retake-btn">Retake</button>
+          </div>
+          <p class="pb-status" id="pb-status"></p>
+        </div>
       </div>
     </section>
 
@@ -1585,6 +1655,38 @@ async function pinPhotostrip(author, imageUrl){
   else { logNotification(author, 'pinboard', 'added some photos to the board!'); }
 }
 
+// Photobooth strips are stored as pinboard_items (kind: 'strip'), so this same data
+// also renders extra frames at the top of the Art Gallery — no separate table needed.
+function renderPhotoboothGalleryStrips(rows){
+  const grid = document.getElementById('gallery-grid');
+  if(!grid) return;
+  grid.querySelectorAll('.gallery-photobooth-item').forEach(function(el){ el.remove(); });
+  const strips = (rows || []).filter(function(item){ return item.kind === 'strip' && item.image_url; });
+  const anchor = grid.firstChild;
+  strips.forEach(function(item){
+    const frame = document.createElement('figure');
+    frame.className = 'frame strip gallery-photobooth-item';
+    const stripPhotos = document.createElement('div');
+    stripPhotos.className = 'strip-photos';
+    const img = document.createElement('img');
+    img.src = item.image_url;
+    img.alt = 'Photobooth strip';
+    stripPhotos.appendChild(img);
+    frame.appendChild(stripPhotos);
+    const figcap = document.createElement('figcaption');
+    figcap.textContent = 'Photobooth — ' + (PROFILE_LABELS[item.author] || item.author);
+    frame.appendChild(figcap);
+    frame.addEventListener('click', function(){
+      document.getElementById('modal-img').src = item.image_url;
+      document.getElementById('modal-img').alt = 'Photobooth strip';
+      document.getElementById('modal-caption-title').textContent = 'From the Photobooth';
+      document.getElementById('modal-caption-text').textContent = 'Taken together in the Photobooth \u2665';
+      document.getElementById('gallery-modal').classList.add('open');
+    });
+    grid.insertBefore(frame, anchor);
+  });
+}
+
 function renderPinboard(rows){
   corkboard.querySelectorAll('.pin-item').forEach(function(el){ el.remove(); });
   if(!rows || !rows.length){ pinboardEmpty.style.display = 'block'; return; }
@@ -1635,7 +1737,10 @@ async function loadPinboard(){
     .from('pinboard_items')
     .select('*')
     .order('created_at', { ascending: false });
-  if(!error){ renderPinboard(data); }
+  if(!error){
+    renderPinboard(data);
+    renderPhotoboothGalleryStrips(data);
+  }
   else { console.error('[Cece&Arar] Could not load pinboard:', error.message, error); }
 }
 
@@ -1650,6 +1755,162 @@ function subscribeToPinboard(){
     )
     .subscribe();
 }
+
+/* ================= PHOTOBOOTH ================= */
+const pbVideo = document.getElementById('pb-video');
+const pbCountdown = document.getElementById('pb-countdown');
+const pbFlash = document.getElementById('pb-flash');
+const pbControlsStart = document.getElementById('pb-controls-start');
+const pbControlsCapture = document.getElementById('pb-controls-capture');
+const pbPreview = document.getElementById('pb-preview');
+const pbCanvas = document.getElementById('pb-canvas');
+const pbStatus = document.getElementById('pb-status');
+const pbCaptureBtn = document.getElementById('pb-capture-btn');
+const pbSaveBtn = document.getElementById('pb-save-btn');
+let pbStream = null;
+let pbShots = [];
+
+function pbWait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+
+function pbGrabFrame(){
+  const c = document.createElement('canvas');
+  c.width = pbVideo.videoWidth || 640;
+  c.height = pbVideo.videoHeight || 480;
+  const ctx = c.getContext('2d');
+  // mirror the capture so it matches the mirrored preview the person is looking at
+  ctx.translate(c.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(pbVideo, 0, 0, c.width, c.height);
+  return c;
+}
+
+async function pbRunCountdownAndCapture(){
+  for(let n = 3; n >= 1; n--){
+    pbCountdown.textContent = n;
+    pbCountdown.style.display = 'flex';
+    await pbWait(800);
+  }
+  pbCountdown.style.display = 'none';
+  pbFlash.classList.add('flash');
+  await pbWait(180);
+  pbFlash.classList.remove('flash');
+  return pbGrabFrame();
+}
+
+function pbStopCamera(){
+  if(pbStream){ pbStream.getTracks().forEach(function(t){ t.stop(); }); pbStream = null; }
+  pbVideo.srcObject = null;
+}
+
+function pbResetToStart(){
+  pbStopCamera();
+  pbShots = [];
+  pbPreview.style.display = 'none';
+  pbControlsCapture.style.display = 'none';
+  pbControlsStart.style.display = 'flex';
+  pbStatus.textContent = '';
+}
+
+document.getElementById('pb-start-camera-btn').addEventListener('click', async function(){
+  try{
+    pbStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+    pbVideo.srcObject = pbStream;
+    pbControlsStart.style.display = 'none';
+    pbControlsCapture.style.display = 'flex';
+  }catch(err){
+    console.error('[Cece&Arar] Could not access camera:', err);
+    alert("Couldn't access your camera — check your browser's camera permissions for this site.");
+  }
+});
+
+document.getElementById('pb-stop-camera-btn').addEventListener('click', function(){
+  pbResetToStart();
+});
+
+pbCaptureBtn.addEventListener('click', async function(){
+  if(!pbStream) return;
+  pbCaptureBtn.disabled = true;
+  pbShots = [];
+  for(let i = 0; i < 3; i++){
+    const frame = await pbRunCountdownAndCapture();
+    pbShots.push(frame);
+    await pbWait(400);
+  }
+  pbCaptureBtn.disabled = false;
+  pbCompositeStrip();
+  pbControlsCapture.style.display = 'none';
+  pbPreview.style.display = 'flex';
+});
+
+function pbCompositeStrip(){
+  const shotW = 260, shotH = 195, pad = 14, gap = 10;
+  const stripW = shotW + pad * 2;
+  const stripH = pad * 2 + shotH * 3 + gap * 2 + 30;
+  pbCanvas.width = stripW;
+  pbCanvas.height = stripH;
+  const ctx = pbCanvas.getContext('2d');
+  ctx.fillStyle = '#5a3f82';
+  ctx.fillRect(0, 0, stripW, stripH);
+  pbShots.forEach(function(shotCanvas, i){
+    const y = pad + i * (shotH + gap);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(pad - 4, y - 4, shotW + 8, shotH + 8);
+    const sRatio = shotCanvas.width / shotCanvas.height;
+    const tRatio = shotW / shotH;
+    let sx, sy, sw, sh;
+    if(sRatio > tRatio){
+      sh = shotCanvas.height; sw = sh * tRatio; sx = (shotCanvas.width - sw) / 2; sy = 0;
+    } else {
+      sw = shotCanvas.width; sh = sw / tRatio; sx = 0; sy = (shotCanvas.height - sh) / 2;
+    }
+    ctx.drawImage(shotCanvas, sx, sy, sw, sh, pad, y, shotW, shotH);
+  });
+  ctx.fillStyle = '#dccdf5';
+  ctx.font = '600 14px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Cece & Arar \u2665', stripW / 2, stripH - 12);
+}
+
+document.getElementById('pb-retake-btn').addEventListener('click', function(){
+  pbShots = [];
+  pbPreview.style.display = 'none';
+  pbControlsCapture.style.display = 'flex';
+  pbStatus.textContent = '';
+});
+
+pbSaveBtn.addEventListener('click', function(){
+  if(!supabaseClient || !currentProfile){ pbStatus.textContent = 'Not connected — check your Supabase setup.'; return; }
+  pbSaveBtn.disabled = true;
+  pbStatus.textContent = 'Saving your photostrip...';
+  pbCanvas.toBlob(async function(blob){
+    if(!blob){ pbStatus.textContent = 'Something went wrong creating the image.'; pbSaveBtn.disabled = false; return; }
+    const fileName = currentProfile + '-' + Date.now() + '.png';
+    const { error: uploadError } = await supabaseClient.storage.from('photobooth').upload(fileName, blob, { contentType: 'image/png' });
+    if(uploadError){
+      console.error('[Cece&Arar] Could not upload photostrip:', uploadError.message, uploadError);
+      pbStatus.textContent = "Couldn't save — " + uploadError.message;
+      pbSaveBtn.disabled = false;
+      return;
+    }
+    const { data: urlData } = supabaseClient.storage.from('photobooth').getPublicUrl(fileName);
+    await pinPhotostrip(currentProfile, urlData.publicUrl);
+    pbStatus.textContent = 'Saved! Check the Art Gallery and Pinboard \u2665';
+    pbSaveBtn.disabled = false;
+    setTimeout(function(){
+      pbShots = [];
+      pbPreview.style.display = 'none';
+      pbControlsCapture.style.display = 'flex';
+      pbStatus.textContent = '';
+    }, 2200);
+  }, 'image/png');
+});
+
+// Stop the camera whenever the person leaves the Photobooth tab, so it's never running in the background
+tabButtons.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    if(btn.getAttribute('data-target') !== 'photobooth'){ pbResetToStart(); }
+  });
+});
 
 /* ================= SHARED CALENDAR ================= */
 let calViewDate = new Date(); calViewDate.setDate(1);
