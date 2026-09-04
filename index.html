@@ -373,6 +373,13 @@
     cursor:pointer; transition:transform .4s ease, box-shadow .4s ease;
   }
   .frame:hover{ transform:scale(1.06) rotate(0deg) !important; z-index:5; }
+  .frame.gallery-photobooth-item{ position:relative; }
+  .gallery-photobooth-delete{
+    position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:50%;
+    border:none; background:rgba(90,63,130,.85); color:#fff; font-size:.75rem; line-height:1;
+    cursor:pointer; box-shadow:0 3px 8px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center;
+    z-index:6;
+  }
 
   .frame.polaroid{
     background:#fff; padding:12px 12px 34px; box-shadow:0 12px 26px var(--shadow);
@@ -508,6 +515,46 @@
   .memory-face.front{ background:var(--cream); transform:rotateY(180deg); }
   .memory-card.matched .memory-face.front{ background:var(--gold-light); }
   #memory-status{ margin-top:16px; text-align:center; color:var(--rose-deep); font-weight:600; min-height:1.4em; }
+
+  /* ---- Shared: game timer + leaderboard (wordsearch/crossword/memory/together) ---- */
+  .game-timer{
+    text-align:center; font-family:var(--font-display); font-size:1.3rem; color:var(--plum); margin-bottom:6px;
+  }
+  .game-date-note{ text-align:center; font-size:.72rem; color:var(--rose-deep); font-style:italic; margin-bottom:14px; }
+  .game-btn{
+    border:none; background:var(--plum); color:#fff; padding:9px 20px; border-radius:999px; font-weight:600;
+    font-size:.82rem; cursor:pointer; font-family:inherit;
+  }
+  .game-btn.alt{ background:transparent; color:var(--rose-deep); box-shadow:inset 0 0 0 2px var(--rose); }
+  .leaderboard-box{
+    max-width:420px; margin:26px auto 0; background:#fff; border-radius:14px; padding:16px 18px;
+    box-shadow:0 10px 24px var(--shadow);
+  }
+  .leaderboard-box h4{ font-family:var(--font-display); color:var(--rose-deep); text-align:center; margin-bottom:10px; font-size:1rem; }
+  .leaderboard-today{ display:flex; justify-content:center; gap:26px; margin-bottom:12px; flex-wrap:wrap; }
+  .leaderboard-today .lb-entry{ text-align:center; font-size:.85rem; color:var(--ink); }
+  .leaderboard-today .lb-entry .lb-name{ font-weight:700; color:var(--plum); display:block; }
+  .leaderboard-today .lb-entry .lb-time{ font-size:1.1rem; }
+  .leaderboard-today .lb-entry.winner .lb-time{ color:var(--rose); }
+  .leaderboard-today .lb-entry.winner .lb-name::after{ content:' \1F3C6'; }
+  .leaderboard-history{ list-style:none; padding:0; margin:0; max-height:140px; overflow-y:auto; font-size:.75rem; }
+  .leaderboard-history li{ display:flex; justify-content:space-between; gap:10px; padding:4px 0; border-bottom:1px dashed var(--blush-deep); color:var(--ink); }
+  .leaderboard-empty{ text-align:center; font-size:.78rem; color:var(--rose-deep); font-style:italic; }
+
+  /* ---- Play Together: Tic-Tac-Toe ---- */
+  #ttt-wrap{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  #ttt-board{ display:grid; grid-template-columns:repeat(3, 80px); grid-template-rows:repeat(3, 80px); gap:8px; }
+  .ttt-cell{
+    background:var(--cream); border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-size:2.2rem; font-weight:700; cursor:pointer; box-shadow:0 8px 16px var(--shadow); color:var(--plum);
+    transition:background .2s ease;
+  }
+  .ttt-cell.taken{ cursor:default; }
+  .ttt-cell:not(.taken):hover{ background:var(--gold-light); }
+  .ttt-cell.x{ color:var(--rose-deep); }
+  .ttt-cell.o{ color:var(--plum); }
+  #ttt-status{ text-align:center; color:var(--rose-deep); font-weight:600; min-height:1.4em; }
+  #ttt-scoreline{ text-align:center; font-size:.8rem; color:var(--ink); }
 
   /* ============ SECTION 4: COUPONS ============ */
   .coupon-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:26px; }
@@ -819,7 +866,19 @@
               <h4>Open when you miss me</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Hey love, if you're reading this, it means you're missing me right now — and I want you to know I'm missing you right back, probably at the exact same moment. Close your eyes and picture me holding your hand. I'm not far, even when it feels that way. Replace this paragraph with whatever you actually want to say to them.</p>
+                                <p>My love,</p>
+                <p>If you're reading this, I imagine you're missing me a little extra today. And if I could have my way, I wouldn't want you to have to miss me at all. I'd just appear beside you, wrap my arms around you, pull you close, and stay there for as long as you needed.</p>
+                <p>I think one of the hardest things about loving someone this much is realising that sometimes love can't make the distance disappear. I can't always reach across the room and hold your hand. I can't spontaneously come over, sit beside you, or look at you and know exactly what you're thinking without you saying a word. And I hate that sometimes.</p>
+                <p>But I hope you know that distance doesn't make me feel any less close to you.</p>
+                <p>If anything, being away from you will probably make me realise even more just how much of my life has become intertwined with yours. There are going to be so many tiny moments when I instinctively want to turn to you, tell you something ridiculous, show you something I found, or simply sit beside you in comfortable silence. And every one of those moments will remind me how lucky I am that I have someone I miss this much.</p>
+                <p>Before you, I don't think I really understood what it meant to feel completely connected to another person. With you, it feels like I found someone whose brain and heart somehow speak the same strange language as mine. You make me feel understood in ways I didn't even know I was looking for.</p>
+                <p>So when you miss me, please don't only think about how far apart we are.</p>
+                <p>Think about how incredibly lucky we are that, out of all the people in this enormous world, we somehow found each other.</p>
+                <p>Think about our stupid jokes, our endless conversations, our gaming nights, our little adventures, our picnics, our food dates, and all the ordinary moments that somehow became my favourite memories simply because they were with you.</p>
+                <p>Close your eyes and imagine me sitting beside you. Imagine my hand in yours. Imagine me looking at you with that ridiculous amount of love I have for you.</p>
+                <p>I'm still there.</p>
+                <p>And no amount of miles could ever make you any less mine to love.</p>
+                <p>I love you. I miss you. And I'll be counting down until I can hold you again.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -838,7 +897,27 @@
               <h4>Open when you're feeling blue</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>I don't know exactly what's weighing on you right now, but I know you, and I know it won't last forever. You're allowed to feel exactly how you feel. Take a breath, make some tea, and remember there's someone out there who's endlessly proud of you. Replace this paragraph with your own words of comfort.</p>
+                                <p>My love,</p>
+                <p>I'm so sorry you're having a difficult day.</p>
+                <p>If I were there, I wouldn't try to immediately make you feel better. I'd just come sit with you. I'd pull you into my arms, let you rest against me, and remind you that you don't have to pretend you're okay when you're not.</p>
+                <p>You never have to be happy for me.</p>
+                <p>You never have to be strong every second.</p>
+                <p>You never have to have the right words.</p>
+                <p>You can just be you.</p>
+                <p>I wish I could be there physically when everything feels a little too heavy. I wish I could hold you the way we hold each other when one of us needs grounding, where neither of us really needs to say anything because somehow being together makes everything feel a little more manageable.</p>
+                <p>So for now, pretend I'm doing that.</p>
+                <p>Imagine my arms around you. Imagine me reminding you that this feeling won't last forever. Imagine me telling you that whatever happened today doesn't change how I see you.</p>
+                <p>Because I need you to know something:</p>
+                <p>I am endlessly proud of you.</p>
+                <p>Not because of what you achieve. Not because of how productive you are. Not because of how well you're handling everything.</p>
+                <p>I'm proud of you simply because you're you.</p>
+                <p>I love your heart. I love your mind. I love the way you experience the world. I love all the complicated, messy, wonderful pieces that make you the person I fell so completely in love with.</p>
+                <p>And I hope on the days when you can't see those things in yourself, you can borrow my eyes for a little while.</p>
+                <p>Because I see someone extraordinary.</p>
+                <p>So let today be hard if it needs to be hard. You don't have to fix everything tonight.</p>
+                <p>Just remember that somewhere in the world, there is someone who loves you more than words can properly explain and who would give anything to be beside you right now.</p>
+                <p>That someone is me.</p>
+                <p>And I'm not going anywhere.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -857,7 +936,26 @@
               <h4>Open when you're hungry</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Go feed yourself something good, okay? Preferably something with cheese on it. I wish I could cook for you right now — until then, consider this letter your permission slip to order whatever sounds best. Replace this paragraph with your favorite food memory together.</p>
+                                <p>My love,</p>
+                <p>First of all, if you're reading this while you're hungry, I need you to know that I am personally offended that I am not there to feed you.</p>
+                <p>I wish I could just turn up, steal you away for dinner, and spend the evening deciding what ridiculous amount of food we're going to order.</p>
+                <p>Maybe we'd dress up and go somewhere lovely for steak, sit across from each other and talk for hours.</p>
+                <p>Or maybe we'd stay in our comfiest clothes, make our ridiculous homemade ramen and steak combination, and somehow convince ourselves that it's a completely reasonable dinner.</p>
+                <p>Honestly, I don't really care what we're eating.</p>
+                <p>That's something I've realised about us.</p>
+                <p>It's never really been about what we're doing.</p>
+                <p>It's about who I'm doing it with.</p>
+                <p>A picnic is special because I'm sitting beside you.</p>
+                <p>A random bubble tea run becomes a memory because I get to watch your face light up when you take that first sip.</p>
+                <p>A night of gaming becomes one of my favourite nights because you're on the other side of the screen laughing with me.</p>
+                <p>Even the most ordinary moments feel different with you.</p>
+                <p>That's one of the things I love most about us. You've somehow made everyday life feel exciting. You make me look forward to the smallest things because I know I get to experience them with you.</p>
+                <p>So please go eat something delicious.</p>
+                <p>And while you're eating, imagine I'm sitting across from you, probably stealing some of your food even though I ordered my own.</p>
+                <p>One day, the distance will just be a story we tell about this part of our lives.</p>
+                <p>And we'll be sitting across from each other again, sharing food, laughing about something completely stupid, and being grateful that we made it through the miles.</p>
+                <p>Until then, save me a bite.</p>
+                <p>I love you.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -876,7 +974,28 @@
               <h4>Open when you need a laugh</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Okay, remember that time we [insert your inside joke here]? I still laugh thinking about it. Replace this paragraph with the funniest memory you have of the two of you, or a terrible joke only they'd appreciate.</p>
+                                <p>My love,</p>
+                <p>If you're opening this because you need to laugh, I think we should take a moment to appreciate just how ridiculous we are together.</p>
+                <p>Somehow, two people with brains that refuse to operate in a remotely sensible manner found each other and decided, "Yes. This one. This is my person."</p>
+                <p>And honestly?</p>
+                <p>I wouldn't change it for anything.</p>
+                <p>I love our chaos.</p>
+                <p>I love the completely random conversations that somehow last for hours.</p>
+                <p>I love the way one tiny thought can turn into an enormous discussion about something neither of us intended to talk about.</p>
+                <p>I love our ridiculous gaming sessions, the nonsense we say to each other, and the fact that we can somehow make each other laugh when absolutely nothing is funny.</p>
+                <p>But more than that, I love how easy it feels to be silly with you.</p>
+                <p>I don't feel like I have to be cool around you.</p>
+                <p>I don't have to be perfectly put together.</p>
+                <p>I can be weird, annoying, excited, distracted, dramatic, overly invested in something completely unimportant—and somehow you still love me.</p>
+                <p>And I hope you know you can always be exactly that way with me too.</p>
+                <p>I think that's one of the most beautiful things you've given me.</p>
+                <p>You've made me feel safe enough to be completely myself.</p>
+                <p>I've never felt this kind of joy and connection with another person before. You make me feel like I found someone I can laugh with, dream with, explore with, grow with, and just be completely ridiculous with.</p>
+                <p>So if you're having a bad day, remember this:</p>
+                <p>Somewhere out there is a person who is completely, hopelessly in love with you and who thinks the two of you are an absolutely hilarious disaster.</p>
+                <p>And I wouldn't have it any other way.</p>
+                <p>Now please go laugh at something stupid for me.</p>
+                <p>And when we see each other again, I fully expect us to immediately return to being the chaotic little idiots we are.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -895,7 +1014,34 @@
               <h4>Open when you can't sleep</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>It's late and your mind is loud — I know how that goes. Put your hand over your heart and just breathe with me for a second. Replace this paragraph with a calming thought, a bedtime story starter, or a reminder of how loved they are.</p>
+                                <p>My love,</p>
+                <p>It's late, isn't it?</p>
+                <p>I wish more than anything that I could be there right now.</p>
+                <p>I wish I could lie beside you, pull you close, listen to you breathe, and slowly feel you relax until you finally drift off.</p>
+                <p>I wish I could reach over and hold your hand without even thinking about it.</p>
+                <p>One of the strangest things about long distance is missing those tiny, ordinary kinds of closeness. Not the big dates or adventures, but simply being able to exist beside someone.</p>
+                <p>So tonight, pretend I'm there.</p>
+                <p>Pretend we're lying together, talking about absolutely nothing until we're both too tired to finish our sentences.</p>
+                <p>Maybe we'd start planning our next Steam game.</p>
+                <p>Maybe we'd get completely carried away talking about Thailand and everything we're going to see.</p>
+                <p>Maybe we'd lie there imagining the warmth, the food, the elephants, and all the adventures waiting for us.</p>
+                <p>And eventually we'd probably end up laughing about something stupid when we're supposed to be sleeping.</p>
+                <p>Those are the moments I look forward to most.</p>
+                <p>Not just the big adventures.</p>
+                <p>The quiet ones.</p>
+                <p>The nights where nothing particularly exciting happens except that I get to be beside you.</p>
+                <p>I hope you know that even when I'm not physically there, you're still such a huge part of my thoughts.</p>
+                <p>You're woven into my everyday life.</p>
+                <p>I see something and think of you.</p>
+                <p>I hear something and want to tell you.</p>
+                <p>I experience something and wish you were beside me.</p>
+                <p>And I think that's what loving someone this deeply does. Somehow, they become part of the way you experience the world.</p>
+                <p>So close your eyes now.</p>
+                <p>Imagine my arms around you.</p>
+                <p>Imagine that for tonight, there are no miles between us.</p>
+                <p>You're safe. You're loved. And I'm right there.</p>
+                <p>Sleep well, my love.</p>
+                <p>I'll see you in our dreams.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -914,7 +1060,27 @@
               <h4>Open when you want to celebrate</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Whatever you're celebrating — big or small — I'm cheering for you louder than anyone. Replace this paragraph with your own congratulations and pride for whatever they've just accomplished.</p>
+                                <p>My love,</p>
+                <p>LOOK AT YOU.</p>
+                <p>Whatever happened today, I hope you're letting yourself feel proud and happy about it.</p>
+                <p>I wish I could be there to celebrate with you properly. I wish I could see your face, give you the biggest hug, and make a ridiculous amount of fuss over whatever you've accomplished.</p>
+                <p>Because I want you to know that I genuinely love watching you succeed.</p>
+                <p>Your happiness makes me happy in a way I don't know how to explain.</p>
+                <p>One of my favourite things about loving you is that your victories somehow feel like little victories for me too. Not because I take any credit for them, but because I get to be the person cheering you on and watching you become everything you're capable of becoming.</p>
+                <p>And I will always, always be in your corner.</p>
+                <p>So whether this is something huge or something tiny that you finally managed to do after putting it off for approximately seventeen years, I'm proud of you.</p>
+                <p>Very proud.</p>
+                <p>Now, obviously, we need to celebrate.</p>
+                <p>Steak dinner?</p>
+                <p>Bubble tea?</p>
+                <p>A ridiculous amount of food and a cosy night together?</p>
+                <p>Whatever it is, we'll do it.</p>
+                <p>And even if I can't be there today, I hope you can feel me celebrating you from wherever I am.</p>
+                <p>One day, I hope we'll look back at this period of our lives and remember all the times we celebrated each other's little victories from far away.</p>
+                <p>And then we'll be together again, making a fuss over each other in person.</p>
+                <p>I'm so lucky that I get to love someone whose happiness matters this much to me.</p>
+                <p>Congratulations, sweetheart.</p>
+                <p>I'm so, so proud of you.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -933,7 +1099,37 @@
               <h4>Open when you're stressed about work</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Work is heavy right now, I know. Whatever's piling up will get sorted, one thing at a time — and you're far more capable than that inbox is giving you credit for. Step away for five minutes if you can. Replace this paragraph with your own words of encouragement.</p>
+                                <p>My love,</p>
+                <p>Take a breath.</p>
+                <p>Just for a second, forget about everything you need to do.</p>
+                <p>Forget the emails. Forget the deadlines. Forget the expectations. Forget the feeling that you should somehow be doing more.</p>
+                <p>You are allowed to pause.</p>
+                <p>I know how much you care and how much you want to do things well. That's one of the things I admire so much about you.</p>
+                <p>But please remember that your worth has absolutely nothing to do with how much you accomplish in a day.</p>
+                <p>You are not your work.</p>
+                <p>You are not your productivity.</p>
+                <p>You are not a list of things you haven't finished yet.</p>
+                <p>You are the person I love.</p>
+                <p>The person who makes me laugh until my stomach hurts.</p>
+                <p>The person I can spend hours gaming with and somehow never get bored of.</p>
+                <p>The person I dream about travelling with.</p>
+                <p>The person I want beside me when life is exciting and when it's completely ordinary.</p>
+                <p>So if today feels overwhelming, take it one tiny piece at a time.</p>
+                <p>And if it doesn't all get done, that's okay.</p>
+                <p>The world will still be here tomorrow.</p>
+                <p>You don't need to earn rest.</p>
+                <p>You don't need to earn love.</p>
+                <p>And you certainly don't need to earn mine.</p>
+                <p>I've seen how capable you are. I've seen your determination, your intelligence, and the way you keep going even when things get difficult.</p>
+                <p>But I also want you to know that I'd love you just as much if you did absolutely nothing productive today.</p>
+                <p>So please be kind to yourself.</p>
+                <p>Take a breath.</p>
+                <p>Get some water.</p>
+                <p>Step away for a little while.</p>
+                <p>And remember that somewhere out there, your biggest supporter is thinking about you and wishing they could give you a massive hug.</p>
+                <p>I believe in you.</p>
+                <p>But even more importantly, I love you.</p>
+                <p>And that's true whether today is incredibly successful or a complete disaster.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -952,7 +1148,41 @@
               <h4>Open when you need motivation</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>You've got this. I've watched you push through things that felt impossible before, and you always find your way. Whatever you're chasing right now, I believe in you completely. Replace this paragraph with a specific reason you're proud of them, or a goal you want to cheer them on for.</p>
+                                <p>My love,</p>
+                <p>I know sometimes you need someone to remind you of who you are.</p>
+                <p>So let me remind you.</p>
+                <p>You are capable of so much more than you give yourself credit for.</p>
+                <p>I've watched you face difficult things. I've watched you figure things out, keep going, adapt, and somehow find your way through.</p>
+                <p>And I wish you could see yourself the way I see you.</p>
+                <p>Because when I look at you, I don't see someone who needs to be perfect.</p>
+                <p>I see someone extraordinary.</p>
+                <p>Someone with a beautiful mind and an enormous heart.</p>
+                <p>Someone I am so unbelievably lucky to call my partner.</p>
+                <p>So whatever you're facing right now, take it one step at a time.</p>
+                <p>You don't have to know exactly how everything will work out.</p>
+                <p>You just have to keep moving.</p>
+                <p>And whenever that little voice in your head tells you that you aren't good enough, I want you to hear my voice instead.</p>
+                <p>I believe in you.</p>
+                <p>Completely.</p>
+                <p>Not because I think you'll never struggle, but because I've seen what you're capable of when you do.</p>
+                <p>And I want you to remember what you're working towards too.</p>
+                <p>There are so many adventures waiting for us.</p>
+                <p>Thailand.</p>
+                <p>Elephants.</p>
+                <p>New places.</p>
+                <p>New memories.</p>
+                <p>More stupid Steam games.</p>
+                <p>More steak dinners.</p>
+                <p>More picnics.</p>
+                <p>More mornings and nights together.</p>
+                <p>More of the life we're slowly building.</p>
+                <p>Every difficult day is just one more day closer to all of that.</p>
+                <p>So keep going, sweetheart.</p>
+                <p>Not because you have to prove anything.</p>
+                <p>But because there is so much life ahead of you.</p>
+                <p>And I cannot wait to experience as much of it with you as we possibly can.</p>
+                <p>You've got this.</p>
+                <p>And I'll be cheering for you every step of the way.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -971,7 +1201,37 @@
               <h4>Open when it's your birthday</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Happy birthday, love! Another year of you existing in the world, which I consider a very good thing for everyone, especially me. Replace this paragraph with your birthday wishes, a favorite memory from a past birthday, or what you hope for them this year.</p>
+                                <p>Happy birthday, my love.</p>
+                <p>I wish I could somehow put into this letter exactly how grateful I am that you exist.</p>
+                <p>Because your existence has changed my life.</p>
+                <p>Before you, I don't think I knew that another person could make me feel this much joy simply by being themselves.</p>
+                <p>You have brought something into my life that I didn't know was missing.</p>
+                <p>A kind of connection I had never experienced.</p>
+                <p>A kind of happiness that feels completely effortless.</p>
+                <p>You became my favourite person without me even realising it was happening.</p>
+                <p>And now I can't imagine my life without you in it.</p>
+                <p>So today isn't just a day to celebrate another year of your life.</p>
+                <p>It's a day I'm grateful for the fact that, somewhere along the way, the universe gave me the incredible gift of meeting you.</p>
+                <p>I hope this next year gives you everything you deserve.</p>
+                <p>I hope it brings you happiness, adventures, ridiculous gaming nights, delicious food, sunny picnics, bubble tea, and all the little moments that make life feel wonderful.</p>
+                <p>And I hope it brings us even closer.</p>
+                <p>I can't wait for everything we still have ahead of us.</p>
+                <p>Thailand.</p>
+                <p>Our adventures.</p>
+                <p>The places we'll visit.</p>
+                <p>The things we'll eat.</p>
+                <p>The memories we'll make.</p>
+                <p>And eventually, hopefully, all those ordinary days where we don't have to count down until we see each other again.</p>
+                <p>I want to celebrate your birthdays for years and years.</p>
+                <p>I want to know who you become, what you dream about, what makes you laugh, what changes, what stays the same.</p>
+                <p>I want to keep falling in love with every version of you.</p>
+                <p>So happy birthday to my favourite person.</p>
+                <p>Thank you for being you.</p>
+                <p>Thank you for finding me.</p>
+                <p>Thank you for loving me.</p>
+                <p>And thank you for making my life feel more joyful, connected, and alive than I ever knew it could.</p>
+                <p>I love you more than I know how to put into a letter.</p>
+                <p>And I hope I get to spend many, many more birthdays loving you.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -990,7 +1250,30 @@
               <h4>Open when you're proud of yourself</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Look at you go. Whatever you just did, you should be sitting in it a little longer — you earned this feeling. Replace this paragraph with the specific thing you're proud of them for.</p>
+                                <p>My love,</p>
+                <p>Please don't rush past this moment.</p>
+                <p>I know you.</p>
+                <p>I know there is probably already a part of your brain thinking about what's next, what you could have done better, or what you need to accomplish after this.</p>
+                <p>But not today.</p>
+                <p>Today, I want you to stop and be proud of yourself.</p>
+                <p>You did it.</p>
+                <p>And I hope you're able to see yourself the way I see you right now.</p>
+                <p>I see someone incredible.</p>
+                <p>Someone who works hard, keeps going, learns, grows, and somehow continues to surprise me.</p>
+                <p>And I feel so lucky that I get to witness it.</p>
+                <p>Your achievements make me happy, but not because they determine your worth.</p>
+                <p>They make me happy because I know how much they mean to you.</p>
+                <p>I love watching the person I love feel proud of themselves.</p>
+                <p>So please let yourself have this moment.</p>
+                <p>Smile.</p>
+                <p>Celebrate.</p>
+                <p>Take it in.</p>
+                <p>And imagine me beside you, looking at you with the biggest smile and probably making far too much of a fuss.</p>
+                <p>Because that's exactly what I'd be doing.</p>
+                <p>And yes, obviously, we're getting bubble tea when I see you.</p>
+                <p>I love you.</p>
+                <p>I'm proud of you.</p>
+                <p>And I hope you never forget that you have someone who will always be genuinely, ridiculously happy to see you win.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -1009,7 +1292,27 @@
               <h4>Open when you're bored</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>Bored, huh? Perfect excuse to do something a little silly. Replace this paragraph with a game idea, a challenge, or a random this-or-that question to keep them entertained.</p>
+                                <p>My love,</p>
+                <p>Bored already?</p>
+                <p>I suppose this is what happens when I'm not there to bother you.</p>
+                <p>Although, if I'm being honest, I would probably be bothering you even if I were there.</p>
+                <p>I wish I could be beside you right now, doing absolutely nothing together.</p>
+                <p>Because I've realised something about us: I don't actually need us to be doing anything exciting to be happy with you.</p>
+                <p>I could sit beside you while we're both doing completely separate things and still feel lucky.</p>
+                <p>That's how much I love being around you.</p>
+                <p>But since I can't magically teleport myself to you, I suppose we'll have to improvise.</p>
+                <p>You could start a new Steam game and immediately become emotionally invested in it.</p>
+                <p>You could go down an enormous rabbit hole planning our Thailand trip.</p>
+                <p>You could find us the best food we've never heard of, the most beautiful place we should visit, or the weirdest thing we absolutely need to see.</p>
+                <p>Or you could simply message me and say, "I'm bored," and let me entertain you.</p>
+                <p>Whatever you do, remember that there is someone out there who would much rather be bored with you than entertained with anyone else.</p>
+                <p>That's one of the things I love about us.</p>
+                <p>You are my favourite person to do nothing with.</p>
+                <p>And when we're finally together again, I don't think I'll ever take those ordinary moments for granted.</p>
+                <p>Even sitting on the couch doing absolutely nothing will feel special because you're there.</p>
+                <p>So go find something fun to do.</p>
+                <p>And if you find something amazing, save it for me.</p>
+                <p>We'll do it together.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -1028,7 +1331,61 @@
               <h4>Open when you need a reminder that you're loved</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>However far or close we are right now, you are loved — completely, without conditions, on your good days and your hard ones. Replace this paragraph with your own reminder of exactly why and how much you love them.</p>
+                                <p>My love,</p>
+                <p>If you're opening this because you need reminding, then let me make this as simple as I possibly can.</p>
+                <p>I love you.</p>
+                <p>I love you so much.</p>
+                <p>I love you in the loud, obvious moments and in the tiny, quiet ones.</p>
+                <p>I love you when we're laughing until neither of us can breathe.</p>
+                <p>I love you when we're sitting together doing absolutely nothing.</p>
+                <p>I love you when we're exploring somewhere new.</p>
+                <p>I love you when we're playing games and getting far too invested.</p>
+                <p>I love you when we're eating steak or ramen or drinking bubble tea.</p>
+                <p>I love you on sunny picnic days.</p>
+                <p>I love you on difficult days.</p>
+                <p>I love you when everything feels easy, and I love you when everything feels hard.</p>
+                <p>I love the way we fit together.</p>
+                <p>I love the strange little world we've created between the two of us.</p>
+                <p>I love that I can be completely myself around you.</p>
+                <p>And I love that you can be completely yourself around me.</p>
+                <p>I don't think I've ever experienced a connection like this before.</p>
+                <p>There is something about you that makes me feel understood, safe, excited, peaceful, and ridiculously happy all at once.</p>
+                <p>You have become my favourite person.</p>
+                <p>My best friend.</p>
+                <p>My co-op partner.</p>
+                <p>My safe place.</p>
+                <p>The person I want to tell everything to.</p>
+                <p>The person I want beside me when something wonderful happens.</p>
+                <p>The person I want to reach for when something hurts.</p>
+                <p>The person I want to make memories with.</p>
+                <p>And, somehow, the person I want to share all the completely boring parts of life with too.</p>
+                <p>That's how I know how deeply I love you.</p>
+                <p>I don't just want the adventures.</p>
+                <p>I want the ordinary days.</p>
+                <p>I want the lazy mornings.</p>
+                <p>The tired evenings.</p>
+                <p>The supermarket trips.</p>
+                <p>The meals we make together.</p>
+                <p>The stupid arguments over what to watch.</p>
+                <p>The nights where we do absolutely nothing.</p>
+                <p>I want all of it.</p>
+                <p>And I know next year might be difficult sometimes.</p>
+                <p>There will be moments when the distance hurts.</p>
+                <p>There will be nights when we wish we could just reach across the space between us.</p>
+                <p>But I don't want you to ever mistake distance for disconnection.</p>
+                <p>You are still my person.</p>
+                <p>Miles can't change that.</p>
+                <p>Time zones can't change that.</p>
+                <p>A difficult day can't change that.</p>
+                <p>Nothing about being apart changes the fact that I chose you, that I love you, and that I am so incredibly grateful that we found each other.</p>
+                <p>So if you ever forget how loved you are, come back to this letter.</p>
+                <p>Read it again.</p>
+                <p>And imagine me looking you in the eyes and saying it instead.</p>
+                <p>You are loved.</p>
+                <p>So deeply.</p>
+                <p>So completely.</p>
+                <p>And so endlessly.</p>
+                <p>By me.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -1053,17 +1410,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">🎵</div>
-              <h3>Music for when you miss me</h3>
+              <h3>Music for when you're missing me</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when you miss me</h4>
-              <!-- EDIT: paste your Spotify embed src below — see the guide beneath this grid for how -->
+              <h4>Music for when you're missing me</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/53fHnV3Req4xVbfzZRoZNC?utm_source=generator&si=d6bad53729e24aaa" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <!-- EDIT (optional): a short note under the player -->
-              <p class="music-note">Every song on here made me think of you.</p>
+              <p class="music-note">This is for when you miss my presence, I know enjoying yourself and being sad about it is weird, but I'm here.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1074,15 +1429,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">💃</div>
-              <h3>Music for when you need to dance</h3>
+              <h3>Music for when you want to share your joy with me</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when you need to dance</h4>
+              <h4>Music for when you want to share your joy with me</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/6tV6WrokSCzBHQjLuJPjZU?utm_source=generator&si=619ada82c62e4e23" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">Turn it up and be silly for three minutes.</p>
+              <p class="music-note">Only old songs can capture how good it feels to be alive purely because you know someone else is, maybe we can listen to this whilst we call and study?</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1093,15 +1448,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">☎</div>
-              <h3>Music for our long calls</h3>
+              <h3>Music for when you need a hug</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for our long calls</h4>
+              <h4>Music for when you need a hug</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/6pkZk3Ea7atW08V71LQfXw?utm_source=generator&si=9296f566867e4fa6" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">Put this on low next time we fall asleep on a call.</p>
+              <p class="music-note">I'm not sure what's happened, but I promise you that you will feel better my sweetheart, you will and I'll be here for you when you're ready to talk.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1112,15 +1467,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">✨</div>
-              <h3>Music for celebrating us</h3>
+              <h3>Music for when you need a pick me up</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for celebrating us</h4>
+              <h4>Music for when you need a pick me up</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/6xJN0s7T4hetuDstSYsZif?utm_source=generator&si=512dc104df8e40cf" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">For the next time we're celebrating something, big or small.</p>
+              <p class="music-note">Songs that say I love you without saying it, but I'll say it anyway, I love you Cece, so so much.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1195,28 +1550,38 @@
     <section class="page-section" id="puzzles">
       <div class="section-intro">
         <h2>Cozy Puzzles</h2>
-        <p>Something small to play with when you need a break.</p>
+        <p>A fresh puzzle every day for each of you to race — same puzzle, best time wins. Plus something to play together.</p>
       </div>
 
       <div class="puzzle-menu">
         <button class="puzzle-tab active" data-panel="panel-wordsearch">Wordsearches</button>
         <button class="puzzle-tab" data-panel="panel-crossword">Crosswords</button>
-        <button class="puzzle-tab" data-panel="panel-minigames">Mini Games</button>
+        <button class="puzzle-tab" data-panel="panel-minigames">Memory Match</button>
+        <button class="puzzle-tab" data-panel="panel-together">Play Together</button>
       </div>
 
       <div class="puzzle-panel active" id="panel-wordsearch">
+        <div class="game-timer" id="ws-timer">0:00</div>
+        <div class="game-date-note" id="ws-date-note"></div>
         <div id="wordsearch-wrap">
           <div>
             <div id="ws-grid"></div>
             <div id="ws-status">find every word ♥</div>
-            <button class="ws-reset" id="ws-reset-btn">shuffle a new grid</button>
+            <button class="game-btn alt" id="ws-reset-btn">try a practice grid (not counted)</button>
           </div>
           <ul id="ws-words"></ul>
+        </div>
+        <div class="leaderboard-box">
+          <h4>Wordsearch Leaderboard</h4>
+          <div class="leaderboard-today" id="ws-lb-today"></div>
+          <ul class="leaderboard-history" id="ws-lb-history"></ul>
         </div>
       </div>
 
       <!-- ===== CROSSWORD ===== -->
       <div class="puzzle-panel" id="panel-crossword">
+        <div class="game-timer" id="crossword-timer">0:00</div>
+        <div class="game-date-note" id="crossword-date-note"></div>
         <div id="crossword-wrap">
           <div id="crossword-grid"></div>
           <div class="crossword-clues">
@@ -1231,16 +1596,41 @@
           </div>
         </div>
         <div id="crossword-status">fill in every square ♥</div>
+        <div style="text-align:center;">
+          <button class="game-btn alt" id="crossword-practice-btn">try a different one (not counted)</button>
+        </div>
+        <div class="leaderboard-box">
+          <h4>Crossword Leaderboard</h4>
+          <div class="leaderboard-today" id="crossword-lb-today"></div>
+          <ul class="leaderboard-history" id="crossword-lb-history"></ul>
+        </div>
       </div>
 
       <!-- ===== MINI GAMES: memory match ===== -->
       <div class="puzzle-panel" id="panel-minigames">
+        <div class="game-timer" id="memory-timer">0:00</div>
+        <div class="game-date-note" id="memory-date-note"></div>
         <div id="memory-wrap">
           <div id="memory-grid"></div>
           <div id="memory-status">find every pair ♥</div>
-          <button class="ws-reset" id="memory-reset-btn">shuffle a new board</button>
+          <button class="game-btn alt" id="memory-reset-btn">try a practice board (not counted)</button>
         </div>
-        <!-- TO ADD MORE MINI GAMES: build a new module and drop its markup here alongside the memory match game -->
+        <div class="leaderboard-box">
+          <h4>Memory Match Leaderboard</h4>
+          <div class="leaderboard-today" id="memory-lb-today"></div>
+          <ul class="leaderboard-history" id="memory-lb-history"></ul>
+        </div>
+      </div>
+
+      <!-- ===== PLAY TOGETHER: Tic-Tac-Toe ===== -->
+      <div class="puzzle-panel" id="panel-together">
+        <div id="ttt-wrap">
+          <p style="text-align:center; max-width:360px; color:var(--ink); font-size:.85rem;">One shared game of tic-tac-toe — take a turn any time, it updates live for both of you.</p>
+          <div id="ttt-status">loading...</div>
+          <div id="ttt-board"></div>
+          <div id="ttt-scoreline"></div>
+          <button class="game-btn" id="ttt-new-btn">Start a new game</button>
+        </div>
       </div>
     </section>
 
@@ -1417,7 +1807,7 @@
    Until you fill these in, the site still works fully offline — nothing will
    sync between devices/browsers yet, and you'll see harmless console warnings.
 */
-const SUPABASE_URL = "https://hrmhpuhwwwjczjlxumic.supabase.co/";
+const SUPABASE_URL = "https://hrmhpuhwwwjczjlxumic.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybWhwdWh3d3dqY3pqbHh1bWljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTg4NTYsImV4cCI6MjEwNDAzNDg1Nn0.TYreSHl0lQRSlJQZjoLPde6_SC0RmHbMSE3d5k1O8Eg";
 
 let supabaseClient = null;
@@ -1869,6 +2259,13 @@ function renderPhotoboothGalleryStrips(rows){
     const figcap = document.createElement('figcaption');
     figcap.textContent = 'Photobooth — ' + (PROFILE_LABELS[item.author] || item.author);
     frame.appendChild(figcap);
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'gallery-photobooth-delete';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Remove this photostrip from the Gallery & Pinboard';
+    delBtn.addEventListener('click', function(e){ e.stopPropagation(); deletePinItem(item.id); });
+    frame.appendChild(delBtn);
     frame.addEventListener('click', function(){
       document.getElementById('modal-img').src = item.image_url;
       document.getElementById('modal-img').alt = 'Photobooth strip';
@@ -1882,7 +2279,7 @@ function renderPhotoboothGalleryStrips(rows){
 
 async function deletePinItem(id){
   if(!supabaseClient || !id) return;
-  const ok = window.confirm('Remove this from the pinboard?');
+  const ok = window.confirm('Remove this photo/note? It will disappear from both the Gallery and the Pinboard.');
   if(!ok) return;
   const { error } = await supabaseClient.from('pinboard_items').delete().eq('id', id);
   if(error){ console.error('[Cece&Arar] Could not remove pin:', error.message, error); }
@@ -2943,11 +3340,142 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
   });
 });
 
+/* ================= SHARED: DAILY SEED + TIMER + LEADERBOARD ================= */
+function todayKey(){
+  return new Date().toISOString().slice(0,10); // UTC date, so both timezones get the same daily puzzle
+}
+function seedFromString(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (Math.imul(31, h) + str.charCodeAt(i)) | 0; }
+  return h;
+}
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function dailyRng(game){
+  return mulberry32(seedFromString(game + '-' + todayKey()));
+}
+function seededShuffle(arr, rng){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rng() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function formatGameTime(sec){
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return m + ':' + String(s).padStart(2, '0');
+}
+function createGameTimer(displayEl){
+  let startTime = null, interval = null;
+  return {
+    start: function(){
+      if(interval) return;
+      startTime = Date.now();
+      interval = setInterval(function(){
+        displayEl.textContent = formatGameTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 250);
+    },
+    stop: function(){
+      if(interval){ clearInterval(interval); interval = null; }
+      return startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+    },
+    reset: function(){
+      if(interval){ clearInterval(interval); interval = null; }
+      startTime = null;
+      displayEl.textContent = '0:00';
+    }
+  };
+}
+
+async function submitGameScore(game, seconds){
+  if(!supabaseClient || !currentProfile) return;
+  const dateKey = todayKey();
+  const { data: existing } = await supabaseClient
+    .from('game_scores').select('id')
+    .eq('game', game).eq('date_key', dateKey).eq('author', currentProfile).limit(1);
+  if(existing && existing.length) return; // already have an official time today
+  const { error } = await supabaseClient.from('game_scores').insert({
+    game: game, date_key: dateKey, author: currentProfile, time_seconds: seconds
+  });
+  if(error){ console.error('[Cece&Arar] Could not save score:', error.message, error); return; }
+  logNotification(currentProfile, 'puzzle', 'finished today\u2019s ' + game + ' in ' + formatGameTime(seconds) + '!');
+  loadLeaderboard(game);
+}
+
+async function loadLeaderboard(game){
+  if(!supabaseClient) return;
+  const dateKey = todayKey();
+  const { data: todayRows, error: err1 } = await supabaseClient
+    .from('game_scores').select('*').eq('game', game).eq('date_key', dateKey);
+  const { data: historyRows, error: err2 } = await supabaseClient
+    .from('game_scores').select('*').eq('game', game).order('date_key', { ascending: false }).limit(30);
+  if(err1 || err2){ console.error('[Cece&Arar] Could not load leaderboard:', (err1 || err2).message); return; }
+  renderLeaderboard(game, todayRows || [], historyRows || []);
+}
+
+function renderLeaderboard(game, todayRows, historyRows){
+  const todayEl = document.getElementById(game + '-lb-today');
+  const historyEl = document.getElementById(game + '-lb-history');
+  if(!todayEl || !historyEl) return;
+  const byAuthor = {};
+  todayRows.forEach(function(r){ byAuthor[r.author] = r.time_seconds; });
+  let winner = null;
+  if(byAuthor.cece != null && byAuthor.arar != null){
+    winner = byAuthor.cece <= byAuthor.arar ? 'cece' : 'arar';
+  }
+  todayEl.innerHTML = '';
+  ['cece', 'arar'].forEach(function(p){
+    const div = document.createElement('div');
+    div.className = 'lb-entry' + (p === winner ? ' winner' : '');
+    div.innerHTML = '<span class="lb-name">' + PROFILE_LABELS[p] + '</span><span class="lb-time">' + (byAuthor[p] != null ? formatGameTime(byAuthor[p]) : '\u2014') + '</span>';
+    todayEl.appendChild(div);
+  });
+  historyEl.innerHTML = '';
+  const byDate = {};
+  historyRows.forEach(function(r){
+    if(!byDate[r.date_key]) byDate[r.date_key] = {};
+    byDate[r.date_key][r.author] = r.time_seconds;
+  });
+  const dates = Object.keys(byDate).sort().reverse().slice(0, 10);
+  if(!dates.length){
+    const li = document.createElement('li');
+    li.className = 'leaderboard-empty';
+    li.textContent = 'No finishes yet \u2014 be the first!';
+    historyEl.appendChild(li);
+    return;
+  }
+  dates.forEach(function(d){
+    const li = document.createElement('li');
+    const cTime = byDate[d].cece != null ? formatGameTime(byDate[d].cece) : '\u2014';
+    const aTime = byDate[d].arar != null ? formatGameTime(byDate[d].arar) : '\u2014';
+    li.innerHTML = '<span>' + d + '</span><span>Cece ' + cTime + ' \u00b7 Arar ' + aTime + '</span>';
+    historyEl.appendChild(li);
+  });
+}
+
+function subscribeGameScores(){
+  if(!supabaseClient) return;
+  supabaseClient.channel('game-scores')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'game_scores' }, function(){
+      ['wordsearch', 'crossword', 'memory'].forEach(loadLeaderboard);
+    })
+    .subscribe();
+}
+
 /* ================= WORD SEARCH GAME ================= */
 (function(){
   const GRID_SIZE = 12;
-  // EDIT WORD LIST HERE — words must be uppercase and fit within a 12x12 grid
-  const WORDS = ["LOVE","HUG","KISS","HEART","CUDDLE","FOREVER","SWEET","DARLING"];
+  // EDIT WORD POOL HERE — 8 are picked each day from this list (must fit within a 12x12 grid, uppercase)
+  const WORD_POOL = ["LOVE","HUG","KISS","HEART","CUDDLE","FOREVER","SWEET","DARLING","ADORE","DREAM",
+    "TOGETHER","SOULMATE","EMBRACE","DEVOTED","CHERISH","TENDER","BELOVED","PROMISE","FLUTTER","WARMTH",
+    "CLOSER","GENTLE","BLESSED","TRUSTED","JOURNEY","COMFORT","SPARKLE","GIGGLE","STEADY","PRECIOUS"];
   const DIRECTIONS = [
     {dx:1,dy:0}, {dx:-1,dy:0}, {dx:0,dy:1}, {dx:0,dy:-1},
     {dx:1,dy:1}, {dx:-1,dy:-1}, {dx:1,dy:-1}, {dx:-1,dy:1}
@@ -2955,11 +3483,16 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
   const gridEl = document.getElementById('ws-grid');
   const wordsEl = document.getElementById('ws-words');
   const statusEl = document.getElementById('ws-status');
+  const dateNoteEl = document.getElementById('ws-date-note');
+  const timerEl = document.getElementById('ws-timer');
+  const timer = createGameTimer(timerEl);
   let grid, cellEls, foundWords, isSelecting, startCell, currentPath;
+  let WORDS = [];
+  let mode = 'daily';
+  let timerStarted = false;
 
   function buildGrid(){
     grid = Array.from({length:GRID_SIZE}, ()=>Array(GRID_SIZE).fill(null));
-    const placed = [];
     WORDS.forEach(function(word){
       let ok = false, attempts = 0;
       while(!ok && attempts < 200){
@@ -3070,7 +3603,9 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
       const li = wordsEl.querySelector('li[data-word="'+match+'"]');
       if(li) li.classList.add('done');
       if(foundWords.size === WORDS.length){
-        statusEl.textContent = 'you found them all ♥';
+        const seconds = timer.stop();
+        statusEl.textContent = 'you found them all in ' + formatGameTime(seconds) + ' \u2665';
+        if(mode === 'daily'){ submitGameScore('wordsearch', seconds); }
       } else {
         statusEl.textContent = 'found "' + match + '"!';
       }
@@ -3079,11 +3614,16 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
     }
   }
 
+  function markInteractionStart(){
+    if(!timerStarted){ timerStarted = true; timer.start(); }
+  }
+
   function initInteraction(){
     isSelecting = false; startCell = null; currentPath = null;
 
     gridEl.addEventListener('mousedown', function(e){
       if(!e.target.classList.contains('ws-cell')) return;
+      markInteractionStart();
       isSelecting = true; startCell = e.target; highlightPath([startCell]);
     });
     gridEl.addEventListener('mousemove', function(e){
@@ -3102,6 +3642,7 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
       const t = e.touches[0];
       const cell = cellFromPoint(t.clientX, t.clientY);
       if(!cell) return;
+      markInteractionStart();
       isSelecting = true; startCell = cell; highlightPath([startCell]);
     }, {passive:true});
     gridEl.addEventListener('touchmove', function(e){
@@ -3119,125 +3660,227 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
     });
   }
 
-  function newGame(){
+  function newGame(newMode){
+    mode = newMode;
     foundWords = new Set();
-    statusEl.textContent = 'find every word ♥';
+    timerStarted = false;
+    timer.reset();
+    statusEl.textContent = 'find every word \u2665';
+    if(mode === 'daily'){
+      const rng = dailyRng('wordsearch');
+      WORDS = seededShuffle(WORD_POOL, rng).slice(0, 8);
+      dateNoteEl.textContent = "Today's puzzle \u2014 " + todayKey();
+    } else {
+      WORDS = seededShuffle(WORD_POOL, Math.random).slice(0, 8);
+      dateNoteEl.textContent = 'Practice grid \u2014 not saved to the leaderboard';
+    }
     buildGrid();
     renderGrid();
     renderWordList();
   }
 
-  document.getElementById('ws-reset-btn').addEventListener('click', newGame);
+  document.getElementById('ws-reset-btn').addEventListener('click', function(){ newGame('practice'); });
   initInteraction();
-  newGame();
+  newGame('daily');
+  loadLeaderboard('wordsearch');
 })();
 
 /* ================= CROSSWORD GAME ================= */
 (function(){
-  // EDIT CROSSWORD HERE — null means a blocked/black square. Each active cell is {l: correct letter, n: clue number or null}.
-  const XW = {
-    rows:7, cols:5,
-    grid:[
-      [{l:'S',n:1}, {l:'E',n:2}, {l:'A',n:null}, {l:'L',n:null}, null],
-      [null, {l:'V',n:null}, null, null, null],
-      [{l:'H',n:3}, {l:'E',n:null}, {l:'A',n:null}, {l:'R',n:4}, {l:'T',n:null}],
-      [null, {l:'R',n:null}, null, {l:'O',n:null}, null],
-      [null, null, null, {l:'S',n:null}, null],
-      [null, null, null, {l:'E',n:null}, null],
-      [{l:'K',n:5}, {l:'I',n:null}, {l:'S',n:null}, {l:'S',n:null}, null]
-    ],
-    across:[
-      {n:1, clue:"What you break to open a love letter"},
-      {n:3, clue:"It skips a beat around you"},
-      {n:5, clue:"A little something on the lips"}
-    ],
-    down:[
-      {n:2, clue:"Together, always and ___"},
-      {n:4, clue:"Flowers that say \u2018I love you\u2019 without words"}
-    ]
-  };
+  // EDIT CROSSWORD POOL HERE — one is picked each day. null = blocked/black square.
+  // Each active cell is {l: correct letter, n: clue number or null}.
+  const POOL = [
+    {
+      rows:7, cols:5,
+      grid:[
+        [{l:'S',n:1}, {l:'E',n:2}, {l:'A',n:null}, {l:'L',n:null}, null],
+        [null, {l:'V',n:null}, null, null, null],
+        [{l:'H',n:3}, {l:'E',n:null}, {l:'A',n:null}, {l:'R',n:4}, {l:'T',n:null}],
+        [null, {l:'R',n:null}, null, {l:'O',n:null}, null],
+        [null, null, null, {l:'S',n:null}, null],
+        [null, null, null, {l:'E',n:null}, null],
+        [{l:'K',n:5}, {l:'I',n:null}, {l:'S',n:null}, {l:'S',n:null}, null]
+      ],
+      across:[
+        {n:1, clue:"What you break to open a love letter"},
+        {n:3, clue:"It skips a beat around you"},
+        {n:5, clue:"A little something on the lips"}
+      ],
+      down:[
+        {n:2, clue:"Together, always and ___"},
+        {n:4, clue:"Flowers that say \u2018I love you\u2019 without words"}
+      ]
+    },
+    {
+      rows:4, cols:5,
+      grid:[
+        [{l:'H',n:1}, {l:'E',n:null}, {l:'A',n:null}, {l:'R',n:2}, {l:'T',n:null}],
+        [null, null, null, {l:'O',n:null}, null],
+        [null, {l:'K',n:3}, {l:'I',n:null}, {l:'S',n:null}, {l:'S',n:null}],
+        [null, null, null, {l:'Y',n:null}, null]
+      ],
+      across:[
+        {n:1, clue:"It skips a beat around you"},
+        {n:3, clue:"A little something on the lips"}
+      ],
+      down:[
+        {n:2, clue:"Rose-colored, like your cheeks when you blush"}
+      ]
+    },
+    {
+      rows:6, cols:5,
+      grid:[
+        [{l:'S',n:1}, {l:'W',n:null}, {l:'E',n:null}, {l:'E',n:null}, {l:'T',n:2}],
+        [null, null, null, null, {l:'E',n:null}],
+        [null, null, null, null, {l:'N',n:null}],
+        [null, null, null, null, {l:'D',n:null}],
+        [null, null, null, null, {l:'E',n:null}],
+        [null, null, null, null, {l:'R',n:null}]
+      ],
+      across:[
+        {n:1, clue:"Just like you"}
+      ],
+      down:[
+        {n:2, clue:"Gentle and caring, just like your love"}
+      ]
+    },
+    {
+      rows:4, cols:6,
+      grid:[
+        [{l:'G',n:1}, {l:'E',n:null}, {l:'N',n:null}, {l:'T',n:null}, {l:'L',n:2}, {l:'E',n:null}],
+        [null, null, null, null, {l:'O',n:null}, null],
+        [null, null, null, null, {l:'V',n:null}, null],
+        [null, null, null, null, {l:'E',n:null}, null]
+      ],
+      across:[
+        {n:1, clue:"Soft and kind, like the way you hold me"}
+      ],
+      down:[
+        {n:2, clue:"The thing I feel for you, endlessly"}
+      ]
+    }
+  ];
 
   const gridEl = document.getElementById('crossword-grid');
   const statusEl = document.getElementById('crossword-status');
   const acrossEl = document.getElementById('clues-across');
   const downEl = document.getElementById('clues-down');
+  const dateNoteEl = document.getElementById('crossword-date-note');
+  const timerEl = document.getElementById('crossword-timer');
+  const timer = createGameTimer(timerEl);
+  let totalActive, correctCount, timerStarted, mode;
 
-  gridEl.style.gridTemplateColumns = 'repeat(' + XW.cols + ', 38px)';
-
-  let totalActive = 0, correctCount = 0;
-  const inputs = [];
-
-  XW.grid.forEach(function(row, r){
-    row.forEach(function(cell, c){
-      const cellEl = document.createElement('div');
-      if(!cell){
-        cellEl.className = 'xw-cell blocked';
-      } else {
-        cellEl.className = 'xw-cell';
-        totalActive++;
-        if(cell.n){
-          const num = document.createElement('span');
-          num.className = 'xw-number';
-          num.textContent = cell.n;
-          cellEl.appendChild(num);
-        }
-        const input = document.createElement('input');
-        input.setAttribute('maxlength','1');
-        input.dataset.answer = cell.l;
-        input.addEventListener('input', function(){
-          input.value = input.value.toUpperCase().replace(/[^A-Z]/g,'');
-          if(input.value === input.dataset.answer){
-            if(!input.classList.contains('correct')){ correctCount++; }
-            input.classList.add('correct');
-          } else {
-            if(input.classList.contains('correct')){ correctCount--; }
-            input.classList.remove('correct');
-          }
-          if(correctCount === totalActive){
-            statusEl.textContent = 'you solved it \u2665';
-          } else {
-            statusEl.textContent = 'fill in every square \u2665';
-          }
-          if(input.value && input.nextInputRef){ input.nextInputRef.focus(); }
-        });
-        cellEl.appendChild(input);
-        inputs.push(input);
-      }
-      gridEl.appendChild(cellEl);
-    });
-  });
-
-  function renderClues(list, el, label){
+  function renderClues(list, el){
     list.forEach(function(item){
       const li = document.createElement('li');
       li.innerHTML = '<b>' + item.n + '.</b> ' + item.clue;
       el.appendChild(li);
     });
   }
-  renderClues(XW.across, acrossEl, 'Across');
-  renderClues(XW.down, downEl, 'Down');
+
+  function buildPuzzle(XW){
+    gridEl.innerHTML = '';
+    acrossEl.innerHTML = '';
+    downEl.innerHTML = '';
+    gridEl.style.gridTemplateColumns = 'repeat(' + XW.cols + ', 38px)';
+    totalActive = 0; correctCount = 0; timerStarted = false;
+    timer.reset();
+    statusEl.textContent = 'fill in every square \u2665';
+
+    XW.grid.forEach(function(row){
+      row.forEach(function(cell){
+        const cellEl = document.createElement('div');
+        if(!cell){
+          cellEl.className = 'xw-cell blocked';
+        } else {
+          cellEl.className = 'xw-cell';
+          totalActive++;
+          if(cell.n){
+            const num = document.createElement('span');
+            num.className = 'xw-number';
+            num.textContent = cell.n;
+            cellEl.appendChild(num);
+          }
+          const input = document.createElement('input');
+          input.setAttribute('maxlength','1');
+          input.dataset.answer = cell.l;
+          input.addEventListener('focus', function(){
+            if(!timerStarted){ timerStarted = true; timer.start(); }
+          });
+          input.addEventListener('input', function(){
+            if(!timerStarted){ timerStarted = true; timer.start(); }
+            input.value = input.value.toUpperCase().replace(/[^A-Z]/g,'');
+            if(input.value === input.dataset.answer){
+              if(!input.classList.contains('correct')){ correctCount++; }
+              input.classList.add('correct');
+            } else {
+              if(input.classList.contains('correct')){ correctCount--; }
+              input.classList.remove('correct');
+            }
+            if(correctCount === totalActive){
+              const seconds = timer.stop();
+              statusEl.textContent = 'you solved it in ' + formatGameTime(seconds) + ' \u2665';
+              if(mode === 'daily'){ submitGameScore('crossword', seconds); }
+            } else {
+              statusEl.textContent = 'fill in every square \u2665';
+            }
+            if(input.value && input.nextInputRef){ input.nextInputRef.focus(); }
+          });
+          cellEl.appendChild(input);
+        }
+        gridEl.appendChild(cellEl);
+      });
+    });
+
+    renderClues(XW.across, acrossEl);
+    renderClues(XW.down, downEl);
+  }
+
+  function newGame(newMode){
+    mode = newMode;
+    let index;
+    if(mode === 'daily'){
+      const rng = dailyRng('crossword');
+      index = Math.floor(rng() * POOL.length);
+      dateNoteEl.textContent = "Today's puzzle \u2014 " + todayKey();
+    } else {
+      index = Math.floor(Math.random() * POOL.length);
+      dateNoteEl.textContent = 'Practice puzzle \u2014 not saved to the leaderboard';
+    }
+    buildPuzzle(POOL[index]);
+  }
+
+  document.getElementById('crossword-practice-btn').addEventListener('click', function(){ newGame('practice'); });
+  newGame('daily');
+  loadLeaderboard('crossword');
 })();
 
 /* ================= MINI GAME: MEMORY MATCH ================= */
 (function(){
-  // EDIT MEMORY MATCH ICONS HERE — needs exactly 8 entries to make 16 cards (8 pairs) in a 4x4 board
-  const ICONS = ['\u2764\ufe0f','\ud83c\udf38','\ud83e\udd8b','\u2728','\ud83d\udc95','\ud83c\udf70','\ud83e\udded','\ud83c\udf19'];
+  // EDIT ICON POOL HERE — 8 are picked each day from this list to make 16 cards (8 pairs) in a 4x4 board
+  const ICON_POOL = ['\u2764\ufe0f','\ud83c\udf38','\ud83e\udd8b','\u2728','\ud83d\udc95','\ud83c\udf70','\ud83e\udded','\ud83c\udf19',
+    '\u2615','\ud83c\udf88','\ud83c\udf37','\ud83e\uddf8','\ud83c\udf53','\ud83c\udf0a','\u2b50','\ud83c\udf80'];
   const gridEl = document.getElementById('memory-grid');
   const statusEl = document.getElementById('memory-status');
-  let flipped, matchedCount, lock;
+  const dateNoteEl = document.getElementById('memory-date-note');
+  const timerEl = document.getElementById('memory-timer');
+  const timer = createGameTimer(timerEl);
+  let flipped, matchedCount, lock, ICONS, mode, timerStarted;
 
-  function shuffle(arr){
-    for(let i=arr.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [arr[i],arr[j]] = [arr[j],arr[i]];
-    }
-    return arr;
-  }
-
-  function newGame(){
-    flipped = []; matchedCount = 0; lock = false;
+  function newGame(newMode){
+    mode = newMode;
+    flipped = []; matchedCount = 0; lock = false; timerStarted = false;
+    timer.reset();
     statusEl.textContent = 'find every pair \u2665';
-    const deck = shuffle(ICONS.concat(ICONS));
+    if(mode === 'daily'){
+      const rng = dailyRng('memory');
+      ICONS = seededShuffle(ICON_POOL, rng).slice(0, 8);
+      dateNoteEl.textContent = "Today's board \u2014 " + todayKey();
+    } else {
+      ICONS = seededShuffle(ICON_POOL, Math.random).slice(0, 8);
+      dateNoteEl.textContent = 'Practice board \u2014 not saved to the leaderboard';
+    }
+    const deck = seededShuffle(ICONS.concat(ICONS), Math.random);
     gridEl.innerHTML = '';
     deck.forEach(function(icon){
       const card = document.createElement('div');
@@ -3250,17 +3893,20 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
         '</div>';
       card.addEventListener('click', function(){
         if(lock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        if(!timerStarted){ timerStarted = true; timer.start(); }
         card.classList.add('flipped');
         flipped.push(card);
         if(flipped.length === 2){
           lock = true;
-          const [a,b] = flipped;
+          const a = flipped[0], b = flipped[1];
           if(a.dataset.icon === b.dataset.icon){
             a.classList.add('matched'); b.classList.add('matched');
             matchedCount++;
             flipped = []; lock = false;
             if(matchedCount === ICONS.length){
-              statusEl.textContent = 'you matched them all \u2665';
+              const seconds = timer.stop();
+              statusEl.textContent = 'you matched them all in ' + formatGameTime(seconds) + ' \u2665';
+              if(mode === 'daily'){ submitGameScore('memory', seconds); }
             }
           } else {
             setTimeout(function(){
@@ -3274,8 +3920,114 @@ document.querySelectorAll('.puzzle-tab').forEach(function(tab){
     });
   }
 
-  document.getElementById('memory-reset-btn').addEventListener('click', newGame);
-  newGame();
+  document.getElementById('memory-reset-btn').addEventListener('click', function(){ newGame('practice'); });
+  newGame('daily');
+  loadLeaderboard('memory');
+})();
+
+subscribeGameScores();
+
+/* ================= PLAY TOGETHER: TIC-TAC-TOE ================= */
+(function(){
+  const boardEl = document.getElementById('ttt-board');
+  const statusEl = document.getElementById('ttt-status');
+  const scorelineEl = document.getElementById('ttt-scoreline');
+  const newBtn = document.getElementById('ttt-new-btn');
+  const WIN_LINES = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  let currentGame = null;
+
+  function mySymbol(){ return currentProfile === 'cece' ? 'X' : 'O'; }
+  function symbolFor(profile){ return profile === 'cece' ? 'X' : 'O'; }
+
+  function checkWinner(board){
+    for(let i=0;i<WIN_LINES.length;i++){
+      const [a,b,c] = WIN_LINES[i];
+      if(board[a] !== '-' && board[a] === board[b] && board[b] === board[c]) return board[a];
+    }
+    if(board.indexOf('-') === -1) return 'draw';
+    return null;
+  }
+
+  function renderBoard(game){
+    boardEl.innerHTML = '';
+    const board = game.board.split('');
+    for(let i=0;i<9;i++){
+      const cell = document.createElement('div');
+      const val = board[i];
+      cell.className = 'ttt-cell' + (val !== '-' ? ' taken ' + (val === 'X' ? 'x' : 'o') : '');
+      cell.textContent = val !== '-' ? val : '';
+      cell.addEventListener('click', function(){ handleCellClick(i); });
+      boardEl.appendChild(cell);
+    }
+    if(!currentProfile){
+      statusEl.textContent = 'log in to play';
+    } else if(game.winner === 'draw'){
+      statusEl.textContent = "It's a draw!";
+    } else if(game.winner){
+      const winnerProfile = game.winner === 'X' ? 'cece' : 'arar';
+      statusEl.textContent = (PROFILE_LABELS[winnerProfile] || winnerProfile) + ' wins! \ud83c\udf89';
+    } else if(game.turn === currentProfile){
+      statusEl.textContent = 'Your turn!';
+    } else {
+      statusEl.textContent = "Waiting for " + (PROFILE_LABELS[otherProfile(currentProfile)] || 'them') + "...";
+    }
+    scorelineEl.textContent = currentProfile ? ('You\u2019re playing as ' + mySymbol()) : '';
+  }
+
+  async function handleCellClick(i){
+    if(!supabaseClient || !currentProfile || !currentGame) return;
+    if(currentGame.winner) return;
+    if(currentGame.turn !== currentProfile) return;
+    const board = currentGame.board.split('');
+    if(board[i] !== '-') return;
+    board[i] = mySymbol();
+    const newBoardStr = board.join('');
+    const result = checkWinner(board);
+    const { error } = await supabaseClient.from('tictactoe_games').update({
+      board: newBoardStr,
+      turn: otherProfile(currentProfile),
+      winner: result,
+      updated_at: new Date().toISOString()
+    }).eq('id', 'main');
+    if(error){ console.error('[Cece&Arar] Could not make move:', error.message, error); }
+  }
+
+  newBtn.addEventListener('click', async function(){
+    if(!supabaseClient) return;
+    const { error } = await supabaseClient.from('tictactoe_games').update({
+      board: '---------', turn: 'cece', winner: null, updated_at: new Date().toISOString()
+    }).eq('id', 'main');
+    if(error){ console.error('[Cece&Arar] Could not start a new game:', error.message, error); }
+  });
+
+  async function ensureAndLoadTTT(){
+    if(!supabaseClient) return;
+    await supabaseClient.from('tictactoe_games').upsert(
+      { id: 'main', board: '---------', turn: 'cece', winner: null },
+      { onConflict: 'id', ignoreDuplicates: true }
+    );
+    const { data, error } = await supabaseClient.from('tictactoe_games').select('*').eq('id', 'main').single();
+    if(error){ console.error('[Cece&Arar] Could not load tic-tac-toe:', error.message, error); return; }
+    currentGame = data;
+    renderBoard(currentGame);
+  }
+
+  function subscribeTTT(){
+    if(!supabaseClient) return;
+    supabaseClient.channel('tictactoe-main')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tictactoe_games', filter: 'id=eq.main' }, function(payload){
+        currentGame = payload.new;
+        renderBoard(currentGame);
+      })
+      .subscribe();
+  }
+
+  ensureAndLoadTTT();
+  subscribeTTT();
 })();
 
 /* ================= DATE NIGHT COUPONS ================= */
