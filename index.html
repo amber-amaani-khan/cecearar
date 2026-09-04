@@ -157,8 +157,25 @@
 
   /* ============ NOTIFICATIONS TAB ============ */
   #notif-list{ display:flex; flex-direction:column; gap:12px; max-width:640px; margin:0 auto; }
+  .notif-toolbar{
+    display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+    max-width:640px; margin:0 auto 16px; font-size:.8rem;
+  }
+  .notif-select-toggle{ display:flex; align-items:center; gap:6px; color:var(--plum); cursor:pointer; user-select:none; }
+  .notif-select-toggle input{ accent-color:var(--rose); cursor:pointer; }
+  .notif-toolbar-actions button, .notif-toolbar > button{
+    border:none; background:var(--blush-deep); color:var(--plum); padding:7px 16px;
+    border-radius:999px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  #notif-delete-selected-btn{ background:linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff; }
+  .notif-item .notif-check{
+    display:none; position:absolute; top:14px; left:-6px; transform:translateX(-100%);
+    accent-color:var(--rose); cursor:pointer; width:16px; height:16px;
+  }
+  #notif-list.select-mode .notif-item{ padding-left:26px; }
+  #notif-list.select-mode .notif-check{ display:block; left:6px; transform:none; }
   .notif-item{
-    background:var(--cream); border-radius:14px; padding:14px 18px;
+    position:relative; background:var(--cream); border-radius:14px; padding:14px 18px;
     box-shadow:0 8px 20px var(--shadow); border-left:4px solid var(--blush-deep);
     display:flex; flex-direction:column; gap:4px; cursor:pointer; transition:border-color .2s ease;
   }
@@ -497,14 +514,16 @@
   }
 
   /* ============ PINBOARD ============ */
+  .pin-add-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px; }
   .pin-add-btn{
     border:none; background:var(--plum); color:#fff; padding:11px 22px; border-radius:999px;
-    font-weight:700; font-size:.85rem; box-shadow:0 8px 20px var(--shadow); margin-top:10px;
+    font-weight:700; font-size:.85rem; box-shadow:0 8px 20px var(--shadow);
     transition:transform .25s ease;
   }
+  .pin-add-btn-alt{ background:var(--rose-deep); }
   .pin-add-btn:hover{ transform:translateY(-2px); }
   .corkboard{
-    position:relative; min-height:420px; border-radius:20px; padding:34px;
+    position:relative; min-height:640px; border-radius:20px; padding:34px;
     background-color:#c99b6a;
     background-image:
       radial-gradient(rgba(0,0,0,.12) 1px, transparent 1.4px),
@@ -512,43 +531,50 @@
     background-size:14px 14px, 18px 18px;
     background-position:0 0, 7px 7px;
     box-shadow:inset 0 0 40px rgba(0,0,0,.35), 0 14px 30px var(--shadow);
-    display:flex; flex-wrap:wrap; align-content:flex-start; gap:22px;
+    overflow:auto;
   }
   #pinboard-empty{
     width:100%; text-align:center; padding:60px 20px; color:#fff8ee; font-style:italic; opacity:.85;
   }
   .pin-item{
-    position:relative; width:170px; min-height:170px; padding:20px 14px 14px;
-    box-shadow:0 10px 20px rgba(0,0,0,.35); cursor:pointer; font-size:.85rem; line-height:1.45;
-    color:var(--ink); transition:transform .2s ease;
+    position:absolute; width:170px; min-height:170px; padding:20px 14px 14px;
+    box-shadow:0 10px 20px rgba(0,0,0,.35); cursor:grab; font-size:.85rem; line-height:1.45;
+    color:var(--ink); transition:box-shadow .2s ease; touch-action:none; user-select:none;
   }
-  .pin-item:hover{ transform:translateY(-4px) scale(1.02); z-index:2; }
-  .pin-item:nth-child(3n){ transform:rotate(-3deg); }
-  .pin-item:nth-child(3n+1){ transform:rotate(2deg); }
-  .pin-item:nth-child(3n+2){ transform:rotate(-1.5deg); }
-  .pin-item:hover:nth-child(3n){ transform:rotate(-3deg) translateY(-4px) scale(1.02); }
-  .pin-item:hover:nth-child(3n+1){ transform:rotate(2deg) translateY(-4px) scale(1.02); }
-  .pin-item:hover:nth-child(3n+2){ transform:rotate(-1.5deg) translateY(-4px) scale(1.02); }
+  .pin-item.dragging, .pin-item.resizing{ cursor:grabbing; z-index:80; box-shadow:0 20px 40px rgba(0,0,0,.5); transition:none; }
   .pin-item.note:nth-child(4n){ background:var(--blush-deep); }
   .pin-item.note:nth-child(4n+1){ background:var(--gold-light); }
   .pin-item.note:nth-child(4n+2){ background:#fff2b8; }
   .pin-item.note:nth-child(4n+3){ background:var(--rose); color:#fff; }
   .pin-item.strip{ background:var(--cream); padding:10px; }
-  .pin-item.strip img{ width:100%; display:block; border-radius:2px; }
+  .pin-item.strip img{ width:100%; display:block; border-radius:2px; pointer-events:none; }
   .pin-pin{
     position:absolute; top:-8px; left:50%; transform:translateX(-50%);
     width:16px; height:16px; border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #ffdede, var(--rose-deep) 70%);
-    box-shadow:0 3px 6px rgba(0,0,0,.4);
+    box-shadow:0 3px 6px rgba(0,0,0,.4); pointer-events:none;
   }
   .pin-note-text{
     display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden;
+    height:calc(100% - 26px);
   }
   .pin-author{
     display:block; margin-top:10px; font-size:.7rem; font-weight:700; letter-spacing:.4px;
     opacity:.75; text-transform:uppercase;
   }
   .pin-caption{ font-size:.75rem; color:var(--ink); margin-top:8px; text-align:center; opacity:.8; }
+  .pin-delete-btn{
+    position:absolute; top:-10px; right:-10px; width:22px; height:22px; border-radius:50%;
+    background:var(--rose-deep); color:#fff; border:none; font-size:.7rem; line-height:1; cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; z-index:5;
+  }
+  .pin-resize-handle{
+    position:absolute; right:2px; bottom:2px; width:16px; height:16px; cursor:nwse-resize; z-index:5;
+  }
+  .pin-resize-handle::after{
+    content:''; position:absolute; right:2px; bottom:2px; width:9px; height:9px;
+    border-right:2px solid rgba(0,0,0,.35); border-bottom:2px solid rgba(0,0,0,.35);
+  }
 
   .pin-modal{
     display:none; position:fixed; inset:0; z-index:200; background:rgba(90,63,130,.55);
@@ -758,7 +784,7 @@
               <h4>Open when you miss me</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>My love, If you're reading this, I imagine you're missing me a little extra today. And if I could have my way, I wouldn't want you to have to miss me at all. I'd just appear beside you, wrap my arms around you, pull you close, and stay there for as long as you needed. I think one of the hardest things about loving someone this much is realising that sometimes love can't make the distance disappear. I can't always reach across the room and hold your hand. I can't spontaneously come over, sit beside you, or look at you and know exactly what you're thinking without you saying a word. And I hate that sometimes. But I hope you know that distance doesn't make me feel any less close to you. If anything, being away from you will probably make me realise even more just how much of my life has become intertwined with yours. There are going to be so many tiny moments when I instinctively want to turn to you, tell you something ridiculous, show you something I found, or simply sit beside you in comfortable silence. And every one of those moments will remind me how lucky I am that I have someone I miss this much. Before you, I don't think I really understood what it meant to feel completely connected to another person. With you, it feels like I found someone whose brain and heart somehow speak the same strange language as mine. You make me feel understood in ways I didn't even know I was looking for. So when you miss me, please don't only think about how far apart we are. Think about how incredibly lucky we are that, out of all the people in this enormous world, we somehow found each other. Think about our stupid jokes, our endless conversations, our gaming nights, our little adventures, our picnics, our food dates, and all the ordinary moments that somehow became my favourite memories simply because they were with you. Close your eyes and imagine me sitting beside you. Imagine my hand in yours. Imagine me looking at you with that ridiculous amount of love I have for you. I'm still there. And no amount of miles could ever make you any less mine to love. I love you. I miss you. And I'll be counting down until I can hold you again.</p>
+                <p>Hey love, if you're reading this, it means you're missing me right now — and I want you to know I'm missing you right back, probably at the exact same moment. Close your eyes and picture me holding your hand. I'm not far, even when it feels that way. Replace this paragraph with whatever you actually want to say to them.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -777,7 +803,7 @@
               <h4>Open when you're feeling blue</h4>
               <!-- EDIT YOUR LETTER HERE -->
               <div class="letter">
-                <p>My love, I'm so sorry you're having a difficult day. If I were there, I wouldn't try to immediately make you feel better. I'd just come sit with you. I'd pull you into my arms, let you rest against me, and remind you that you don't have to pretend you're okay when you're not. You never have to be happy for me. You never have to be strong every second. You never have to have the right words. You can just be you. I wish I could be there physically when everything feels a little too heavy. I wish I could hold you the way we hold each other when one of us needs grounding, where neither of us really needs to say anything because somehow being together makes everything feel a little more manageable. So for now, pretend I'm doing that. Imagine my arms around you. Imagine me reminding you that this feeling won't last forever. Imagine me telling you that whatever happened today doesn't change how I see you. Because I need you to know something: I am endlessly proud of you. Not because of what you achieve. Not because of how productive you are. Not because of how well you're handling everything. I'm proud of you simply because you're you. I love your heart. I love your mind. I love the way you experience the world. I love all the complicated, messy, wonderful pieces that make you the person I fell so completely in love with. And I hope on the days when you can't see those things in yourself, you can borrow my eyes for a little while. Because I see someone extraordinary. So let today be hard if it needs to be hard. You don't have to fix everything tonight. Just remember that somewhere in the world, there is someone who loves you more than words can properly explain and who would give anything to be beside you right now. That someone is me. And I'm not going anywhere.</p>
+                <p>I don't know exactly what's weighing on you right now, but I know you, and I know it won't last forever. You're allowed to feel exactly how you feel. Take a breath, make some tea, and remember there's someone out there who's endlessly proud of you. Replace this paragraph with your own words of comfort.</p>
               </div>
               <button class="close-envelope">close</button>
             </div>
@@ -992,15 +1018,17 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">🎵</div>
-              <h3>Music for when you're missing me</h3>
+              <h3>Music for when you miss me</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when you're missing me</h4>
+              <h4>Music for when you miss me</h4>
+              <!-- EDIT: paste your Spotify embed src below — see the guide beneath this grid for how -->
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/53fHnV3Req4xVbfzZRoZNC?utm_source=generator&si=d6bad53729e24aaa" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">This is for when you miss my presence, I know enjoying yourself and being sad about it is weird, but I'm here.</p>
+              <!-- EDIT (optional): a short note under the player -->
+              <p class="music-note">Every song on here made me think of you.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1011,15 +1039,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">💃</div>
-              <h3>Music for when you want to share your joy with me</h3>
+              <h3>Music for when you need to dance</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when i smile because you exist</h4>
+              <h4>Music for when you need to dance</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6tV6WrokSCzBHQjLuJPjZU?utm_source=generator&si=619ada82c62e4e23" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">Only oold songs can capture how good it feels to be alive purely because you know someone else is, maybe we can listen to this whilst we call and study?.</p>
+              <p class="music-note">Turn it up and be silly for three minutes.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1030,15 +1058,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">☎</div>
-              <h3>Music for when you need a hug</h3>
+              <h3>Music for our long calls</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when you need a hug</h4>
+              <h4>Music for our long calls</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6pkZk3Ea7atW08V71LQfXw?utm_source=generator&si=9296f566867e4fa6" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">I'm not sure whats happened, but I promise you that you will feel better my sweetheart, you will and I'll be here for you when you're ready to talk.</p>
+              <p class="music-note">Put this on low next time we fall asleep on a call.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1049,15 +1077,15 @@
           <div class="envelope-inner">
             <div class="envelope-face envelope-front music-front">
               <div class="env-seal">✨</div>
-              <h3>Music for when you need a pick me up</h3>
+              <h3>Music for celebrating us</h3>
               <div class="hint">tap to press play</div>
             </div>
             <div class="envelope-face envelope-back">
-              <h4>Music for when you need a pick me up</h4>
+              <h4>Music for celebrating us</h4>
               <div class="music-embed">
-                <iframe src="https://open.spotify.com/embed/playlist/6xJN0s7T4hetuDstSYsZif?utm_source=generator&si=512dc104df8e40cf" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe src="https://open.spotify.com/embed/playlist/PASTE_PLAYLIST_ID_HERE?utm_source=generator" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
               </div>
-              <p class="music-note">Songs that say I love you without saying it, but I'll say it anyway, I love you Charles Elliot Collins, so so much.</p>
+              <p class="music-note">For the next time we're celebrating something, big or small.</p>
               <button class="close-envelope">close</button>
             </div>
           </div>
@@ -1184,8 +1212,12 @@
     <section class="page-section" id="pinboard">
       <div class="section-intro">
         <h2>Pinboard</h2>
-        <p>Pin a note for me to find. New things you add show up for me instantly, wherever I am.</p>
-        <button type="button" id="add-note-btn" class="pin-add-btn">+ Leave a note</button>
+        <p>Pin a note or photo for me to find. Drag things around, resize them, or remove them — new things show up for me instantly, wherever I am.</p>
+        <div class="pin-add-actions">
+          <button type="button" id="add-note-btn" class="pin-add-btn">+ Leave a note</button>
+          <button type="button" id="add-photo-btn" class="pin-add-btn pin-add-btn-alt">+ Add a photo</button>
+          <input type="file" id="pin-photo-input" accept="image/*" style="display:none;">
+        </div>
       </div>
       <div class="corkboard" id="corkboard">
         <p id="pinboard-empty">Nothing pinned yet ♥</p>
@@ -1286,6 +1318,16 @@
       <div class="section-intro">
         <h2>Notifications</h2>
         <p>Everything that's happened while you were away. Tap one to mark it read.</p>
+      </div>
+      <div class="notif-toolbar">
+        <label class="notif-select-toggle">
+          <input type="checkbox" id="notif-select-mode-btn">
+          Select
+        </label>
+        <div class="notif-toolbar-actions" id="notif-toolbar-actions" style="display:none;">
+          <button type="button" id="notif-delete-selected-btn">Delete selected</button>
+        </div>
+        <button type="button" id="notif-clear-all-btn">Clear all</button>
       </div>
       <div id="notif-list">
         <p id="notif-empty" style="text-align:center;color:var(--rose-deep);">Nothing yet ♥</p>
@@ -1494,6 +1536,11 @@ function trySavedAutoLogin(){
 const notifList = document.getElementById('notif-list');
 const notifEmpty = document.getElementById('notif-empty');
 const notifBadge = document.getElementById('notif-badge');
+const notifSelectModeBtn = document.getElementById('notif-select-mode-btn');
+const notifToolbarActions = document.getElementById('notif-toolbar-actions');
+const notifDeleteSelectedBtn = document.getElementById('notif-delete-selected-btn');
+const notifClearAllBtn = document.getElementById('notif-clear-all-btn');
+let notifSelectedIds = new Set();
 
 // Call this from anywhere in the site to notify the OTHER profile of something.
 // Example: logNotification(currentProfile, 'letter', 'opened "Open when you miss me"');
@@ -1522,10 +1569,29 @@ function renderNotifications(rows){
     if(!n.read) unread++;
     const div = document.createElement('div');
     div.className = 'notif-item' + (n.read ? '' : ' unread');
-    div.innerHTML =
+    div.dataset.id = n.id;
+    const check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'notif-check';
+    check.checked = notifSelectedIds.has(n.id);
+    check.addEventListener('click', function(e){ e.stopPropagation(); });
+    check.addEventListener('change', function(){
+      if(check.checked){ notifSelectedIds.add(n.id); } else { notifSelectedIds.delete(n.id); }
+    });
+    div.appendChild(check);
+    const body = document.createElement('div');
+    body.innerHTML =
       '<strong>' + (PROFILE_LABELS[n.sender] || n.sender) + '</strong> ' + n.message +
       '<span class="notif-meta">' + new Date(n.created_at).toLocaleString() + '</span>';
-    div.addEventListener('click', function(){ markNotificationRead(n.id); });
+    div.appendChild(body);
+    div.addEventListener('click', function(){
+      if(notifList.classList.contains('select-mode')){
+        check.checked = !check.checked;
+        check.dispatchEvent(new Event('change'));
+      } else {
+        markNotificationRead(n.id);
+      }
+    });
     notifList.appendChild(div);
   });
   notifBadge.textContent = unread;
@@ -1561,6 +1627,38 @@ function subscribeToNotifications(){
     )
     .subscribe();
 }
+
+notifSelectModeBtn.addEventListener('change', function(){
+  const on = notifSelectModeBtn.checked;
+  notifList.classList.toggle('select-mode', on);
+  notifToolbarActions.style.display = on ? 'flex' : 'none';
+  if(!on){
+    notifSelectedIds.clear();
+    notifList.querySelectorAll('.notif-check').forEach(function(c){ c.checked = false; });
+  }
+});
+
+notifDeleteSelectedBtn.addEventListener('click', async function(){
+  if(!supabaseClient || !notifSelectedIds.size) return;
+  const ids = Array.from(notifSelectedIds);
+  const { error } = await supabaseClient.from('notifications').delete().in('id', ids);
+  if(error){ console.error('[Cece&Arar] Could not delete notifications:', error.message, error); return; }
+  notifSelectedIds.clear();
+  loadNotifications();
+});
+
+notifClearAllBtn.addEventListener('click', async function(){
+  if(!supabaseClient || !currentProfile) return;
+  const ok = window.confirm('Clear all your notifications? This can\'t be undone.');
+  if(!ok) return;
+  const { error } = await supabaseClient.from('notifications').delete().eq('recipient', currentProfile);
+  if(error){ console.error('[Cece&Arar] Could not clear notifications:', error.message, error); return; }
+  notifSelectedIds.clear();
+  notifSelectModeBtn.checked = false;
+  notifList.classList.remove('select-mode');
+  notifToolbarActions.style.display = 'none';
+  loadNotifications();
+});
 
 document.getElementById('notif-bell').addEventListener('click', function(){
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
@@ -1614,7 +1712,17 @@ const noteTextarea = document.getElementById('note-textarea');
 const noteExpandModal = document.getElementById('note-expand-modal');
 const noteExpandAuthor = document.getElementById('note-expand-author');
 const noteExpandText = document.getElementById('note-expand-text');
+const pinPhotoInput = document.getElementById('pin-photo-input');
 let pinChannel = null;
+
+// Loosely scatters new pins across the board so they don't all land in the same spot.
+function pinRandomPlacement(){
+  return {
+    pos_x: Math.round(20 + Math.random() * 640),
+    pos_y: Math.round(20 + Math.random() * 420),
+    rotation: Math.round((Math.random() * 10 - 5) * 10) / 10
+  };
+}
 
 document.getElementById('add-note-btn').addEventListener('click', function(){
   noteTextarea.value = '';
@@ -1631,23 +1739,60 @@ document.getElementById('note-expand-close-btn').addEventListener('click', funct
 document.getElementById('note-submit-btn').addEventListener('click', async function(){
   const text = noteTextarea.value.trim();
   if(!text || !currentProfile || !supabaseClient) { noteModal.classList.remove('show'); return; }
+  const placement = pinRandomPlacement();
   const { error } = await supabaseClient.from('pinboard_items').insert({
     author: currentProfile,
     kind: 'note',
-    content: text
+    content: text,
+    pos_x: placement.pos_x,
+    pos_y: placement.pos_y,
+    width: 190,
+    height: 190,
+    rotation: placement.rotation
   });
   if(error){ console.error('[Cece&Arar] Could not pin note:', error.message, error); }
   else { logNotification(currentProfile, 'pinboard', 'left you a note!'); }
   noteModal.classList.remove('show');
 });
 
+document.getElementById('add-photo-btn').addEventListener('click', function(){
+  pinPhotoInput.value = '';
+  pinPhotoInput.click();
+});
+
+pinPhotoInput.addEventListener('change', async function(){
+  const file = pinPhotoInput.files && pinPhotoInput.files[0];
+  if(!file || !currentProfile || !supabaseClient) return;
+  const fileName = currentProfile + '-photo-' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9.]/g, '');
+  const { error: uploadError } = await supabaseClient.storage.from('photobooth').upload(fileName, file, { contentType: file.type });
+  if(uploadError){ console.error('[Cece&Arar] Could not upload photo:', uploadError.message, uploadError); return; }
+  const { data: urlData } = supabaseClient.storage.from('photobooth').getPublicUrl(fileName);
+  const placement = pinRandomPlacement();
+  const { error } = await supabaseClient.from('pinboard_items').insert({
+    author: currentProfile,
+    kind: 'strip',
+    image_url: urlData.publicUrl,
+    pos_x: placement.pos_x,
+    pos_y: placement.pos_y,
+    width: 200,
+    rotation: placement.rotation
+  });
+  if(error){ console.error('[Cece&Arar] Could not pin photo:', error.message, error); }
+  else { logNotification(currentProfile, 'pinboard', 'added some photos to the board!'); }
+});
+
 // Call this from the Photobooth once it's built: pinPhotostrip(currentProfile, thumbnailUrl)
 async function pinPhotostrip(author, imageUrl){
   if(!supabaseClient) return;
+  const placement = pinRandomPlacement();
   const { error } = await supabaseClient.from('pinboard_items').insert({
     author: author,
     kind: 'strip',
-    image_url: imageUrl
+    image_url: imageUrl,
+    pos_x: placement.pos_x,
+    pos_y: placement.pos_y,
+    width: 200,
+    rotation: placement.rotation
   });
   if(error){ console.error('[Cece&Arar] Could not pin photostrip:', error.message, error); }
   else { logNotification(author, 'pinboard', 'added some photos to the board!'); }
@@ -1685,16 +1830,117 @@ function renderPhotoboothGalleryStrips(rows){
   });
 }
 
+async function deletePinItem(id){
+  if(!supabaseClient || !id) return;
+  const ok = window.confirm('Remove this from the pinboard?');
+  if(!ok) return;
+  const { error } = await supabaseClient.from('pinboard_items').delete().eq('id', id);
+  if(error){ console.error('[Cece&Arar] Could not remove pin:', error.message, error); }
+}
+
+// Makes a pin item draggable by pointer, and (optionally) resizable via a handle.
+// Persists the final position/size to Supabase once the person lets go.
+function makePinInteractive(el, item, resizable){
+  let dragging = false, moved = false, startX = 0, startY = 0, origX = 0, origY = 0;
+
+  el.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.pin-delete-btn') || e.target.closest('.pin-resize-handle')) return;
+    dragging = true; moved = false;
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('dragging');
+    startX = e.clientX; startY = e.clientY;
+    origX = parseFloat(el.style.left) || 0;
+    origY = parseFloat(el.style.top) || 0;
+  });
+  el.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+    el.style.left = Math.max(0, origX + dx) + 'px';
+    el.style.top = Math.max(0, origY + dy) + 'px';
+  });
+  el.addEventListener('pointerup', async function(e){
+    if(!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    if(moved && supabaseClient){
+      const newX = Math.round(parseFloat(el.style.left));
+      const newY = Math.round(parseFloat(el.style.top));
+      await supabaseClient.from('pinboard_items').update({ pos_x: newX, pos_y: newY }).eq('id', item.id);
+    }
+  });
+  el.addEventListener('click', function(e){
+    if(moved){ e.stopImmediatePropagation(); moved = false; }
+  }, true);
+
+  if(resizable){
+    const handle = document.createElement('div');
+    handle.className = 'pin-resize-handle';
+    el.appendChild(handle);
+    let resizing = false, startW = 0, startH = 0;
+    handle.addEventListener('pointerdown', function(e){
+      e.stopPropagation();
+      resizing = true;
+      handle.setPointerCapture(e.pointerId);
+      el.classList.add('resizing');
+      startX = e.clientX; startY = e.clientY;
+      startW = el.offsetWidth; startH = el.offsetHeight;
+    });
+    handle.addEventListener('pointermove', function(e){
+      if(!resizing) return;
+      e.stopPropagation();
+      const dx = e.clientX - startX;
+      const newW = Math.max(120, startW + dx);
+      el.style.width = newW + 'px';
+      if(item.kind === 'note'){
+        const dy = e.clientY - startY;
+        el.style.height = Math.max(120, startH + dy) + 'px';
+      }
+    });
+    handle.addEventListener('pointerup', async function(e){
+      if(!resizing) return;
+      e.stopPropagation();
+      resizing = false;
+      el.classList.remove('resizing');
+      if(supabaseClient){
+        const update = { width: Math.round(el.offsetWidth) };
+        if(item.kind === 'note'){ update.height = Math.round(el.offsetHeight); }
+        await supabaseClient.from('pinboard_items').update(update).eq('id', item.id);
+      }
+    });
+  }
+}
+
 function renderPinboard(rows){
   corkboard.querySelectorAll('.pin-item').forEach(function(el){ el.remove(); });
   if(!rows || !rows.length){ pinboardEmpty.style.display = 'block'; return; }
   pinboardEmpty.style.display = 'none';
-  rows.forEach(function(item){
+  let maxBottom = 600;
+  rows.forEach(function(item, idx){
     const div = document.createElement('div');
     div.className = 'pin-item ' + item.kind;
+    const placement = (item.pos_x == null || item.pos_y == null)
+      ? { pos_x: 20 + (idx % 4) * 210, pos_y: 20 + Math.floor(idx / 4) * 210 }
+      : { pos_x: item.pos_x, pos_y: item.pos_y };
+    div.style.left = placement.pos_x + 'px';
+    div.style.top = placement.pos_y + 'px';
+    if(item.width) div.style.width = item.width + 'px';
+    if(item.kind === 'note' && item.height) div.style.height = item.height + 'px';
+    div.style.transform = 'rotate(' + (item.rotation || 0) + 'deg)';
+    maxBottom = Math.max(maxBottom, placement.pos_y + (item.height || 220) + 60);
+
     const pin = document.createElement('div');
     pin.className = 'pin-pin';
     div.appendChild(pin);
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'pin-delete-btn';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Remove from pinboard';
+    delBtn.addEventListener('click', function(e){ e.stopPropagation(); deletePinItem(item.id); });
+    div.appendChild(delBtn);
+
     if(item.kind === 'strip' && item.image_url){
       const img = document.createElement('img');
       img.src = item.image_url;
@@ -1710,6 +1956,7 @@ function renderPinboard(rows){
         document.getElementById('modal-caption-text').textContent = '';
         document.getElementById('gallery-modal').classList.add('open');
       });
+      makePinInteractive(div, item, true);
     } else {
       const p = document.createElement('p');
       p.className = 'pin-note-text';
@@ -1724,9 +1971,11 @@ function renderPinboard(rows){
         noteExpandText.textContent = item.content || '';
         noteExpandModal.classList.add('show');
       });
+      makePinInteractive(div, item, true);
     }
     corkboard.appendChild(div);
   });
+  corkboard.style.minHeight = maxBottom + 'px';
 }
 
 async function loadPinboard(){
