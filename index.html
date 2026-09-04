@@ -293,20 +293,30 @@
 
   /* ============ SECTION 1c: PHOTOBOOTH ============ */
   .photobooth-wrap{
-    max-width:420px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:16px;
+    max-width:560px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:16px;
   }
+  .photobooth-split{ display:flex; gap:12px; width:100%; }
   .photobooth-stage{
-    position:relative; width:100%; aspect-ratio:4/3; background:var(--plum-deep);
+    position:relative; flex:1; aspect-ratio:4/3; background:var(--plum-deep);
     border-radius:16px; overflow:hidden; box-shadow:0 14px 30px var(--shadow);
   }
   #pb-video{ width:100%; height:100%; object-fit:cover; transform:scaleX(-1); display:block; }
+  #pb-partner-img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .pb-partner-waiting{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:0 14px; font-size:.8rem; color:var(--gold-light); font-style:italic;
+  }
+  .pb-stage-label{
+    position:absolute; bottom:8px; left:10px; font-size:.7rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.5);
+  }
   .pb-countdown{
     display:none; position:absolute; inset:0; align-items:center; justify-content:center;
     font-family:var(--font-display); font-size:5rem; color:#fff; text-shadow:0 4px 14px rgba(0,0,0,.4);
-    background:rgba(0,0,0,.15);
+    background:rgba(0,0,0,.15); z-index:3;
   }
   .pb-flash{
-    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; transition:opacity .1s ease;
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; transition:opacity .1s ease; z-index:4;
   }
   .pb-flash.flash{ opacity:.85; }
   .photobooth-controls{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
@@ -318,11 +328,36 @@
   .pb-btn:hover{ transform:translateY(-2px); }
   .pb-btn:disabled{ opacity:.6; cursor:default; transform:none; }
   .pb-btn-primary{ background:linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff; }
-  .pb-hint{ font-size:.75rem; color:var(--rose-deep); text-align:center; max-width:280px; }
+  .pb-btn-link{ background:transparent; color:var(--rose-deep); text-decoration:underline; box-shadow:none; }
+  .pb-hint{ font-size:.75rem; color:var(--rose-deep); text-align:center; max-width:320px; }
   .photobooth-preview{ display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; }
   .photobooth-preview h3{ font-size:1rem; }
-  #pb-canvas{ max-width:220px; width:100%; border-radius:10px; box-shadow:0 14px 30px var(--shadow); }
+  #pb-canvas{ max-width:320px; width:100%; border-radius:10px; box-shadow:0 14px 30px var(--shadow); }
   .pb-status{ font-size:.8rem; color:var(--rose-deep); min-height:1.2em; text-align:center; }
+  .pb-swatches{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center; }
+  .pb-swatch{
+    width:26px; height:26px; border-radius:50%; cursor:pointer; border:2px solid transparent;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+  }
+  .pb-swatch.selected{ border-color:var(--plum); transform:scale(1.15); }
+  .pb-swatch-custom{
+    width:26px; height:26px; border-radius:50%; padding:0; border:2px solid var(--blush-deep);
+    cursor:pointer; overflow:hidden;
+  }
+  #pb-approvals-box{
+    width:100%; display:flex; flex-direction:column; gap:10px; background:var(--cream);
+    border-radius:16px; padding:16px; box-shadow:0 10px 24px var(--shadow);
+  }
+  .pb-approval-item{ display:flex; gap:12px; align-items:center; }
+  .pb-approval-item img{ width:56px; border-radius:6px; box-shadow:0 4px 10px rgba(0,0,0,.3); }
+  .pb-approval-item .pb-approval-text{ flex:1; font-size:.82rem; color:var(--ink); }
+  .pb-approval-item .pb-approval-actions{ display:flex; gap:6px; }
+  .pb-approval-actions button{
+    border:none; border-radius:999px; padding:6px 12px; font-size:.75rem; font-weight:700; cursor:pointer;
+  }
+  .pb-approve-btn{ background:var(--rose); color:#fff; }
+  .pb-reject-btn{ background:var(--blush-deep); color:var(--plum); }
+  .pb-pending-note{ font-size:.75rem; color:var(--rose-deep); text-align:center; font-style:italic; }
 
   /* ============ SECTION 2: GALLERY ============ */
   .gallery-grid{
@@ -1099,31 +1134,44 @@
     <section class="page-section" id="photobooth">
       <div class="section-intro">
         <h2>Photobooth</h2>
-        <p>Take a quick 3-shot photostrip together — it'll land in the Art Gallery and get pinned to the board.</p>
+        <p>Take a photostrip together — live if you're both here, solo if it's just you. Download it, or send it for the other to approve into the Gallery &amp; Pinboard.</p>
       </div>
 
       <div class="photobooth-wrap">
-        <div class="photobooth-stage">
-          <video id="pb-video" autoplay playsinline muted></video>
-          <div class="pb-countdown" id="pb-countdown"></div>
-          <div class="pb-flash" id="pb-flash"></div>
-        </div>
 
+        <!-- Pending approvals waiting on ME -->
+        <div id="pb-approvals-box" style="display:none;"></div>
+
+        <!-- STEP 1: ready screen -->
         <div class="photobooth-controls" id="pb-controls-start">
-          <button type="button" class="pb-btn pb-btn-primary" id="pb-start-camera-btn">Start Camera</button>
-          <p class="pb-hint">Your browser will ask for camera permission — allow it, then get ready to pose 3 times!</p>
+          <button type="button" class="pb-btn pb-btn-primary" id="pb-ready-btn">I'm ready! 📸</button>
+          <p class="pb-hint" id="pb-ready-status">Your browser will ask for camera permission — allow it, then get ready to pose!</p>
+          <button type="button" class="pb-btn pb-btn-link" id="pb-solo-btn" style="display:none;">Start without them</button>
         </div>
 
-        <div class="photobooth-controls" id="pb-controls-capture" style="display:none;">
-          <button type="button" class="pb-btn pb-btn-primary" id="pb-capture-btn">Take the photostrip 📸</button>
-          <button type="button" class="pb-btn" id="pb-stop-camera-btn">Stop camera</button>
+        <!-- STEP 2: split-screen capture -->
+        <div class="photobooth-split" id="pb-split" style="display:none;">
+          <div class="photobooth-stage" id="pb-stage-mine">
+            <video id="pb-video" autoplay playsinline muted></video>
+            <div class="pb-countdown" id="pb-countdown"></div>
+            <div class="pb-flash" id="pb-flash"></div>
+            <span class="pb-stage-label">You</span>
+          </div>
+          <div class="photobooth-stage pb-stage-partner" id="pb-stage-partner" style="display:none;">
+            <img id="pb-partner-img" alt="">
+            <div class="pb-partner-waiting" id="pb-partner-waiting">waiting for their photo...</div>
+            <span class="pb-stage-label" id="pb-partner-label">Partner</span>
+          </div>
         </div>
 
+        <!-- STEP 3: customize + preview -->
         <div class="photobooth-preview" id="pb-preview" style="display:none;">
           <h3>Here's your strip!</h3>
           <canvas id="pb-canvas"></canvas>
+          <div class="pb-swatches" id="pb-swatches"></div>
           <div class="photobooth-controls">
-            <button type="button" class="pb-btn pb-btn-primary" id="pb-save-btn">Save to Gallery &amp; Pinboard ♥</button>
+            <button type="button" class="pb-btn pb-btn-primary" id="pb-download-btn">Download PNG 🖨️</button>
+            <button type="button" class="pb-btn" id="pb-send-btn">Send to Gallery &amp; Pinboard ♥</button>
             <button type="button" class="pb-btn" id="pb-retake-btn">Retake</button>
           </div>
           <p class="pb-status" id="pb-status"></p>
@@ -1518,6 +1566,8 @@ function enterAsProfile(profile, remember){
   subscribeToPinboard();
   loadCalendarEvents();
   subscribeToCalendar();
+  loadPhotoboothApprovals();
+  subscribePhotoboothApprovals();
 }
 
 // Auto sign-in on repeat visits so you don't have to log in every time.
@@ -2008,16 +2058,39 @@ const pbVideo = document.getElementById('pb-video');
 const pbCountdown = document.getElementById('pb-countdown');
 const pbFlash = document.getElementById('pb-flash');
 const pbControlsStart = document.getElementById('pb-controls-start');
-const pbControlsCapture = document.getElementById('pb-controls-capture');
+const pbSplit = document.getElementById('pb-split');
+const pbStagePartner = document.getElementById('pb-stage-partner');
+const pbPartnerImg = document.getElementById('pb-partner-img');
+const pbPartnerWaiting = document.getElementById('pb-partner-waiting');
+const pbPartnerLabel = document.getElementById('pb-partner-label');
 const pbPreview = document.getElementById('pb-preview');
 const pbCanvas = document.getElementById('pb-canvas');
 const pbStatus = document.getElementById('pb-status');
-const pbCaptureBtn = document.getElementById('pb-capture-btn');
-const pbSaveBtn = document.getElementById('pb-save-btn');
+const pbSwatches = document.getElementById('pb-swatches');
+const pbReadyBtn = document.getElementById('pb-ready-btn');
+const pbReadyStatus = document.getElementById('pb-ready-status');
+const pbSoloBtn = document.getElementById('pb-solo-btn');
+const pbDownloadBtn = document.getElementById('pb-download-btn');
+const pbSendBtn = document.getElementById('pb-send-btn');
+const pbApprovalsBox = document.getElementById('pb-approvals-box');
+
 let pbStream = null;
-let pbShots = [];
+let pbMyShots = [];
+let pbPartnerShots = [];
+let pbMode = 'solo'; // 'solo' or 'duo'
+let pbChannel = null;
+let pbChannelReady = false;
+let pbSequenceRunning = false;
+let pbCurrentSessionId = null;
+const PB_BG_COLORS = ['#5a3f82', '#ffffff', '#fffbfd', '#ffd6e8', '#ff9dc4', '#b8a6e8', '#2b2338'];
+let pbBgColor = PB_BG_COLORS[0];
 
 function pbWait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+
+function pbIsLeader(){
+  // deterministic tie-breaker so only one side kicks off the synced sequence
+  return currentProfile < otherProfile(currentProfile);
+}
 
 function pbGrabFrame(){
   const c = document.createElement('canvas');
@@ -2029,6 +2102,13 @@ function pbGrabFrame(){
   ctx.scale(-1, 1);
   ctx.drawImage(pbVideo, 0, 0, c.width, c.height);
   return c;
+}
+
+function pbCanvasToSmallDataUrl(canvas){
+  const small = document.createElement('canvas');
+  small.width = 260; small.height = Math.round(260 * canvas.height / canvas.width);
+  small.getContext('2d').drawImage(canvas, 0, 0, small.width, small.height);
+  return small.toDataURL('image/jpeg', 0.7);
 }
 
 async function pbRunCountdownAndCapture(){
@@ -2051,111 +2131,393 @@ function pbStopCamera(){
 
 function pbResetToStart(){
   pbStopCamera();
-  pbShots = [];
+  pbMyShots = [];
+  pbPartnerShots = [];
+  pbSequenceRunning = false;
+  pbCurrentSessionId = null;
+  pbSplit.style.display = 'none';
   pbPreview.style.display = 'none';
-  pbControlsCapture.style.display = 'none';
   pbControlsStart.style.display = 'flex';
+  pbSoloBtn.style.display = 'none';
+  pbReadyBtn.disabled = false;
+  pbReadyStatus.textContent = "Your browser will ask for camera permission — allow it, then get ready to pose!";
   pbStatus.textContent = '';
+  pbStagePartner.style.display = 'none';
+  pbPartnerImg.style.display = 'none';
+  pbPartnerWaiting.style.display = 'flex';
+  if(pbChannel && pbChannelReady){ pbChannel.track({ ready: false }); }
 }
 
-document.getElementById('pb-start-camera-btn').addEventListener('click', async function(){
+/* ---- Presence + broadcast room, set up the first time the Photobooth tab is opened ---- */
+function pbInitChannel(){
+  if(pbChannel || !currentProfile || !supabaseClient) return;
+  pbChannel = supabaseClient.channel('photobooth-room', {
+    config: { presence: { key: currentProfile }, broadcast: { self: true } }
+  });
+  pbChannel.on('presence', { event: 'sync' }, function(){
+    const state = pbChannel.presenceState();
+    const other = otherProfile(currentProfile);
+    const otherEntries = state[other] || [];
+    const otherReady = otherEntries.some(function(e){ return e.ready; });
+    const otherPresent = otherEntries.length > 0;
+    const myEntries = state[currentProfile] || [];
+    const iAmReady = myEntries.some(function(e){ return e.ready; });
+
+    if(iAmReady && !pbSequenceRunning){
+      if(otherReady){
+        pbReadyStatus.textContent = PROFILE_LABELS[other] + " is ready too — starting...";
+        if(pbIsLeader()){
+          const sessionId = 'pb-' + Date.now();
+          const startAt = Date.now() + 1500;
+          pbChannel.send({ type: 'broadcast', event: 'start-sequence', payload: { sessionId: sessionId, startAt: startAt, mode: 'duo' } });
+        }
+      } else if(otherPresent){
+        pbReadyStatus.textContent = PROFILE_LABELS[other] + " is here but not ready yet...";
+      } else {
+        pbReadyStatus.textContent = "Waiting for " + PROFILE_LABELS[other] + "...";
+      }
+    }
+  });
+  pbChannel.on('broadcast', { event: 'start-sequence' }, function(msg){
+    if(pbSequenceRunning) return;
+    pbRunSequence(msg.payload.mode, msg.payload.sessionId, msg.payload.startAt);
+  });
+  pbChannel.on('broadcast', { event: 'shot' }, function(msg){
+    const p = msg.payload;
+    if(!p || p.author === currentProfile || p.sessionId !== pbCurrentSessionId) return;
+    pbPartnerShots[p.index] = p.dataUrl;
+    pbPartnerImg.src = p.dataUrl;
+    pbPartnerImg.style.display = 'block';
+    pbPartnerWaiting.style.display = 'none';
+  });
+  pbChannel.subscribe(function(status){
+    if(status === 'SUBSCRIBED'){
+      pbChannelReady = true;
+      pbChannel.track({ ready: false });
+    }
+  });
+}
+
+pbReadyBtn.addEventListener('click', async function(){
   try{
     pbStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
     pbVideo.srcObject = pbStream;
-    pbControlsStart.style.display = 'none';
-    pbControlsCapture.style.display = 'flex';
   }catch(err){
     console.error('[Cece&Arar] Could not access camera:', err);
     alert("Couldn't access your camera — check your browser's camera permissions for this site.");
+    return;
   }
+  pbReadyBtn.disabled = true;
+  pbSoloBtn.style.display = 'inline-block';
+  pbReadyStatus.textContent = 'Waiting for ' + PROFILE_LABELS[otherProfile(currentProfile)] + '...';
+  if(pbChannelReady){ pbChannel.track({ ready: true }); }
 });
 
-document.getElementById('pb-stop-camera-btn').addEventListener('click', function(){
-  pbResetToStart();
+pbSoloBtn.addEventListener('click', function(){
+  if(pbSequenceRunning) return;
+  const sessionId = 'pb-solo-' + Date.now();
+  pbRunSequence('solo', sessionId, Date.now());
 });
 
-pbCaptureBtn.addEventListener('click', async function(){
-  if(!pbStream) return;
-  pbCaptureBtn.disabled = true;
-  pbShots = [];
+async function pbRunSequence(mode, sessionId, startAt){
+  pbSequenceRunning = true;
+  pbMode = mode;
+  pbCurrentSessionId = sessionId;
+  pbMyShots = [];
+  pbPartnerShots = [];
+
+  // make sure the camera is running even if this side triggered via solo/received broadcast late
+  if(!pbStream){
+    try{
+      pbStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+      pbVideo.srcObject = pbStream;
+    }catch(err){
+      console.error('[Cece&Arar] Could not access camera:', err);
+      alert("Couldn't access your camera — check your browser's camera permissions for this site.");
+      pbSequenceRunning = false;
+      return;
+    }
+  }
+
+  pbControlsStart.style.display = 'none';
+  pbSplit.style.display = 'flex';
+  if(mode === 'duo'){
+    pbStagePartner.style.display = 'block';
+    pbPartnerImg.style.display = 'none';
+    pbPartnerWaiting.style.display = 'flex';
+    pbPartnerLabel.textContent = PROFILE_LABELS[otherProfile(currentProfile)] || 'Partner';
+  } else {
+    pbStagePartner.style.display = 'none';
+  }
+
+  const delay = startAt - Date.now();
+  if(delay > 0){ await pbWait(delay); }
+
   for(let i = 0; i < 3; i++){
     const frame = await pbRunCountdownAndCapture();
-    pbShots.push(frame);
+    pbMyShots.push(frame);
+    if(mode === 'duo' && pbChannel){
+      pbChannel.send({ type: 'broadcast', event: 'shot', payload: { sessionId: sessionId, author: currentProfile, index: i, dataUrl: pbCanvasToSmallDataUrl(frame) } });
+      pbPartnerWaiting.style.display = pbPartnerShots[i] ? 'none' : 'flex';
+    }
     await pbWait(400);
   }
-  pbCaptureBtn.disabled = false;
+
+  if(mode === 'duo'){
+    // give the partner's last shot(s) a moment to arrive over the network
+    let waited = 0;
+    while(pbPartnerShots.length < 3 && waited < 4000){
+      await pbWait(300);
+      waited += 300;
+    }
+  }
+
+  pbSequenceRunning = false;
+  pbStopCamera();
+  pbSplit.style.display = 'none';
+  pbBgColor = PB_BG_COLORS[0];
+  pbBuildSwatches();
   pbCompositeStrip();
-  pbControlsCapture.style.display = 'none';
   pbPreview.style.display = 'flex';
-});
+}
+
+function pbBuildSwatches(){
+  pbSwatches.innerHTML = '';
+  PB_BG_COLORS.forEach(function(color){
+    const sw = document.createElement('button');
+    sw.type = 'button';
+    sw.className = 'pb-swatch' + (color === pbBgColor ? ' selected' : '');
+    sw.style.background = color;
+    sw.addEventListener('click', function(){
+      pbBgColor = color;
+      pbBuildSwatches();
+      pbCompositeStrip();
+    });
+    pbSwatches.appendChild(sw);
+  });
+  const customLabel = document.createElement('label');
+  customLabel.className = 'pb-swatch-custom';
+  customLabel.style.background = pbBgColor;
+  customLabel.title = 'Custom color';
+  const customInput = document.createElement('input');
+  customInput.type = 'color';
+  customInput.value = pbBgColor.length === 7 ? pbBgColor : '#5a3f82';
+  customInput.style.opacity = '0';
+  customInput.style.width = '0';
+  customInput.style.height = '0';
+  customInput.addEventListener('input', function(){
+    pbBgColor = customInput.value;
+    pbCompositeStrip();
+    customLabel.style.background = pbBgColor;
+  });
+  customLabel.appendChild(customInput);
+  pbSwatches.appendChild(customLabel);
+}
+
+function pbDrawShotInto(ctx, source, x, y, w, h){
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x - 4, y - 4, w + 8, h + 8);
+  if(!source){
+    ctx.fillStyle = '#e6d9f5';
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#7c5cad';
+    ctx.font = '600 12px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('missed this one', x + w / 2, y + h / 2);
+    return;
+  }
+  const sw = source.width || source.naturalWidth;
+  const sh = source.height || source.naturalHeight;
+  const sRatio = sw / sh;
+  const tRatio = w / h;
+  let sx, sy, drawW, drawH;
+  if(sRatio > tRatio){
+    drawH = sh; drawW = drawH * tRatio; sx = (sw - drawW) / 2; sy = 0;
+  } else {
+    drawW = sw; drawH = drawW / tRatio; sx = 0; sy = (sh - drawH) / 2;
+  }
+  ctx.drawImage(source, sx, sy, drawW, drawH, x, y, w, h);
+}
 
 function pbCompositeStrip(){
-  const shotW = 260, shotH = 195, pad = 14, gap = 10;
-  const stripW = shotW + pad * 2;
-  const stripH = pad * 2 + shotH * 3 + gap * 2 + 30;
+  const shotW = 240, shotH = 180, pad = 14, gap = 10;
+  const cols = pbMode === 'duo' ? 2 : 1;
+  const stripW = pad * 2 + shotW * cols + (cols - 1) * gap;
+  const stripH = pad * 2 + shotH * 3 + gap * 2 + 34;
   pbCanvas.width = stripW;
   pbCanvas.height = stripH;
   const ctx = pbCanvas.getContext('2d');
-  ctx.fillStyle = '#5a3f82';
+  ctx.fillStyle = pbBgColor;
   ctx.fillRect(0, 0, stripW, stripH);
-  pbShots.forEach(function(shotCanvas, i){
+
+  for(let i = 0; i < 3; i++){
     const y = pad + i * (shotH + gap);
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(pad - 4, y - 4, shotW + 8, shotH + 8);
-    const sRatio = shotCanvas.width / shotCanvas.height;
-    const tRatio = shotW / shotH;
-    let sx, sy, sw, sh;
-    if(sRatio > tRatio){
-      sh = shotCanvas.height; sw = sh * tRatio; sx = (shotCanvas.width - sw) / 2; sy = 0;
-    } else {
-      sw = shotCanvas.width; sh = sw / tRatio; sx = 0; sy = (shotCanvas.height - sh) / 2;
+    pbDrawShotInto(ctx, pbMyShots[i], pad, y, shotW, shotH);
+    if(pbMode === 'duo'){
+      const partnerImgEl = pbPartnerShots[i] ? pbLoadedImageCache(pbPartnerShots[i]) : null;
+      pbDrawShotInto(ctx, partnerImgEl, pad + shotW + gap, y, shotW, shotH);
     }
-    ctx.drawImage(shotCanvas, sx, sy, sw, sh, pad, y, shotW, shotH);
-  });
-  ctx.fillStyle = '#dccdf5';
+  }
+
+  const isLightBg = pbIsLightColor(pbBgColor);
+  ctx.fillStyle = isLightBg ? '#5a3f82' : '#dccdf5';
   ctx.font = '600 14px Georgia, serif';
   ctx.textAlign = 'center';
   ctx.fillText('Cece & Arar \u2665', stripW / 2, stripH - 12);
 }
 
+function pbIsLightColor(hex){
+  const c = hex.replace('#', '');
+  if(c.length !== 6) return false;
+  const r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 170;
+}
+
+// Small cache so we don't rebuild an Image() from the dataURL on every re-composite
+const pbImageCache = {};
+function pbLoadedImageCache(dataUrl){
+  if(pbImageCache[dataUrl] && pbImageCache[dataUrl].complete) return pbImageCache[dataUrl];
+  const img = new Image();
+  img.src = dataUrl;
+  pbImageCache[dataUrl] = img;
+  img.onload = function(){ pbCompositeStrip(); };
+  return img.complete ? img : null;
+}
+
 document.getElementById('pb-retake-btn').addEventListener('click', function(){
-  pbShots = [];
-  pbPreview.style.display = 'none';
-  pbControlsCapture.style.display = 'flex';
-  pbStatus.textContent = '';
+  pbResetToStart();
 });
 
-pbSaveBtn.addEventListener('click', function(){
+pbDownloadBtn.addEventListener('click', function(){
+  pbCanvas.toBlob(function(blob){
+    if(!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cece-arar-photostrip-' + Date.now() + '.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }, 'image/png');
+});
+
+pbSendBtn.addEventListener('click', function(){
   if(!supabaseClient || !currentProfile){ pbStatus.textContent = 'Not connected — check your Supabase setup.'; return; }
-  pbSaveBtn.disabled = true;
-  pbStatus.textContent = 'Saving your photostrip...';
+  pbSendBtn.disabled = true;
+  pbStatus.textContent = 'Sending for approval...';
   pbCanvas.toBlob(async function(blob){
-    if(!blob){ pbStatus.textContent = 'Something went wrong creating the image.'; pbSaveBtn.disabled = false; return; }
+    if(!blob){ pbStatus.textContent = 'Something went wrong creating the image.'; pbSendBtn.disabled = false; return; }
     const fileName = currentProfile + '-' + Date.now() + '.png';
     const { error: uploadError } = await supabaseClient.storage.from('photobooth').upload(fileName, blob, { contentType: 'image/png' });
     if(uploadError){
       console.error('[Cece&Arar] Could not upload photostrip:', uploadError.message, uploadError);
-      pbStatus.textContent = "Couldn't save — " + uploadError.message;
-      pbSaveBtn.disabled = false;
+      pbStatus.textContent = "Couldn't send — " + uploadError.message;
+      pbSendBtn.disabled = false;
       return;
     }
     const { data: urlData } = supabaseClient.storage.from('photobooth').getPublicUrl(fileName);
-    await pinPhotostrip(currentProfile, urlData.publicUrl);
-    pbStatus.textContent = 'Saved! Check the Art Gallery and Pinboard \u2665';
-    pbSaveBtn.disabled = false;
-    setTimeout(function(){
-      pbShots = [];
-      pbPreview.style.display = 'none';
-      pbControlsCapture.style.display = 'flex';
-      pbStatus.textContent = '';
-    }, 2200);
+    const { error: insertError } = await supabaseClient.from('photobooth_approvals').insert({
+      requester: currentProfile,
+      image_url: urlData.publicUrl,
+      status: 'pending'
+    });
+    if(insertError){
+      console.error('[Cece&Arar] Could not request approval:', insertError.message, insertError);
+      pbStatus.textContent = "Couldn't send — " + insertError.message;
+      pbSendBtn.disabled = false;
+      return;
+    }
+    logNotification(currentProfile, 'photobooth-approval', 'wants to add a photostrip to the Gallery & Pinboard — check Photobooth to approve!');
+    pbStatus.textContent = 'Sent! Waiting for ' + PROFILE_LABELS[otherProfile(currentProfile)] + ' to approve \u2665';
+    pbSendBtn.disabled = false;
+    setTimeout(function(){ pbResetToStart(); }, 2400);
   }, 'image/png');
 });
 
-// Stop the camera whenever the person leaves the Photobooth tab, so it's never running in the background
+/* ---- Approvals: strips the OTHER profile has sent, waiting on me ---- */
+async function loadPhotoboothApprovals(){
+  if(!supabaseClient || !currentProfile) return;
+  const { data, error } = await supabaseClient
+    .from('photobooth_approvals')
+    .select('*')
+    .eq('status', 'pending')
+    .eq('requester', otherProfile(currentProfile))
+    .order('created_at', { ascending: false });
+  if(!error){ renderPhotoboothApprovals(data); }
+  else { console.error('[Cece&Arar] Could not load approvals:', error.message, error); }
+}
+
+function renderPhotoboothApprovals(rows){
+  pbApprovalsBox.innerHTML = '';
+  if(!rows || !rows.length){ pbApprovalsBox.style.display = 'none'; return; }
+  pbApprovalsBox.style.display = 'flex';
+  rows.forEach(function(item){
+    const row = document.createElement('div');
+    row.className = 'pb-approval-item';
+    const img = document.createElement('img');
+    img.src = item.image_url;
+    img.alt = 'photostrip awaiting approval';
+    row.appendChild(img);
+    const text = document.createElement('div');
+    text.className = 'pb-approval-text';
+    text.textContent = (PROFILE_LABELS[item.requester] || item.requester) + ' wants to add this to the Gallery & Pinboard.';
+    row.appendChild(text);
+    const actions = document.createElement('div');
+    actions.className = 'pb-approval-actions';
+    const approveBtn = document.createElement('button');
+    approveBtn.type = 'button';
+    approveBtn.className = 'pb-approve-btn';
+    approveBtn.textContent = 'Approve';
+    approveBtn.addEventListener('click', function(){ resolvePhotoboothApproval(item, 'approved'); });
+    const rejectBtn = document.createElement('button');
+    rejectBtn.type = 'button';
+    rejectBtn.className = 'pb-reject-btn';
+    rejectBtn.textContent = 'Not this one';
+    rejectBtn.addEventListener('click', function(){ resolvePhotoboothApproval(item, 'rejected'); });
+    actions.appendChild(approveBtn);
+    actions.appendChild(rejectBtn);
+    row.appendChild(actions);
+    pbApprovalsBox.appendChild(row);
+  });
+}
+
+async function resolvePhotoboothApproval(item, decision){
+  if(!supabaseClient) return;
+  const { error } = await supabaseClient
+    .from('photobooth_approvals')
+    .update({ status: decision, resolved_at: new Date().toISOString() })
+    .eq('id', item.id);
+  if(error){ console.error('[Cece&Arar] Could not resolve approval:', error.message, error); return; }
+  if(decision === 'approved'){
+    await pinPhotostrip(item.requester, item.image_url);
+    logNotification(currentProfile, 'photobooth-approval', 'approved your photostrip! Check the Gallery \u2665');
+  } else {
+    logNotification(currentProfile, 'photobooth-approval', "didn't add that one — no worries, try again anytime!");
+  }
+  loadPhotoboothApprovals();
+}
+
+function subscribePhotoboothApprovals(){
+  if(!supabaseClient) return;
+  supabaseClient
+    .channel('photobooth-approvals')
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'photobooth_approvals' },
+      function(){ loadPhotoboothApprovals(); }
+    )
+    .subscribe();
+}
+
+// Init the presence room the first time the Photobooth tab is opened, and stop
+// the camera / mark not-ready whenever the person navigates away from it.
 tabButtons.forEach(function(btn){
   btn.addEventListener('click', function(){
-    if(btn.getAttribute('data-target') !== 'photobooth'){ pbResetToStart(); }
+    if(btn.getAttribute('data-target') === 'photobooth'){
+      pbInitChannel();
+    } else {
+      pbResetToStart();
+    }
   });
 });
 
